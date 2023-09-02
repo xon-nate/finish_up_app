@@ -1,0 +1,81 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+/pub/
+/build/
+pubspec.lock
+
+# IDE and editor files
+.idea/
+.vscode/
+.*.swp
+*.swo
+*.swp
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Firebase config (if not handled securely)
+firebase_options.dart
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Ignore any generated files
+generated/
+
+# Ignore any compiled Dart code or artifacts
+.dart_tool/build/
+*.dart.js
+*.dart.js.map
+*.dill
+
+# Logo and fonts folders (exclude if not relevant)
+/assets/fonts/
+/assets/images/
+# Platform-specific folders (exclude if not relevant)
+/android/
+/ios/
+/linux/
+/macos/
+/web/
+/windows/
+
+# Exclude SQLite database files (if applicable)
+# Modify the pattern to match your SQLite database files if necessary
+# Example for common database extensions
+*.sqlite
+*.db
+
+# Exclude sensitive configuration files (if applicable)
+# Modify the pattern to match your configuration files if necessary
+# Example for sensitive files with '.config' extension
+*.config
