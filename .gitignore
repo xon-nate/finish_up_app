@@ -61,6 +61,7 @@ generated/
 # Logo and fonts folders (exclude if not relevant)
 /assets/fonts/
 /assets/images/
+
 # Platform-specific folders (exclude if not relevant)
 /android/
 /ios/
