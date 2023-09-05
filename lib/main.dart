@@ -30,6 +30,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.light,
         primaryColor: Colors.white,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF111111),
+          elevation: 15,
+        ),
         cardTheme: const CardTheme(
           color: Colors.white,
           surfaceTintColor: Color(0xFFF5F6F7),

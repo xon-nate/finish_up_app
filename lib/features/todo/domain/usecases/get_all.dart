@@ -5,10 +5,10 @@ import '../../../../core/utils/usecase.dart';
 import '../entities/todo.dart';
 import '../repository/todo_repository.dart';
 
-class GetAllTodoUseCase extends UseCase<List<Todo>, NoParams> {
+class GetAllTodosUseCase extends UseCase<List<Todo>, NoParams> {
   final TodoRepository repository;
 
-  GetAllTodoUseCase(this.repository);
+  GetAllTodosUseCase(this.repository);
 
   @override
   Future<Either<Failure, List<Todo>>> call(NoParams params) async {

@@ -5,13 +5,14 @@ import '../../../../core/utils/usecase.dart';
 import '../entities/todo.dart';
 import '../repository/todo_repository.dart';
 
-class UpdateTodoStatusUseCase extends UseCase<bool, Todo> {
+class UpdateTodoStatusUseCase extends UseCase<bool, Params<Todo>> {
   final TodoRepository repository;
 
   UpdateTodoStatusUseCase(this.repository);
 
   @override
-  Future<Either<Failure, bool>> call(Todo params) async {
-    return await repository.updateTodoStatus(params);
+  // params is the todo to be updated with the new status (completed or not)
+  Future<Either<Failure, bool>> call(Params<Todo> params) async {
+    return await repository.updateTodoStatus(params.data);
   }
 }
