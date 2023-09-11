@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart' as sql;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/todo.dart';
 import '../models/todo_model.dart';
@@ -15,7 +16,7 @@ abstract class TodoLocalDataBase {
   Future<void> deleteTodo(int id);
 }
 
-abstract class TodoLocalDataBaseImpl implements TodoLocalDataBase {
+class TodoLocalDataBaseImpl implements TodoLocalDataBase {
   @override
   Future<void> createTables(sql.Database database) async {
     await database.execute('''
@@ -43,36 +44,45 @@ abstract class TodoLocalDataBaseImpl implements TodoLocalDataBase {
       );
       return db;
     } catch (e) {
-      debugPrint("Error opening the database: $e");
-      rethrow; // Re-throw the exception to be caught by the repository.
+      throw Exception("Error opening the database: $e");
     }
   }
 
   @override
   Future<int> addTodo(TodoModel todo) async {
-    final db = await openDB();
-
-    final data = {
-      'title': todo.title,
-      'description': todo.description,
-      'dueDate': todo.dueDate?.toUtc().toIso8601String(),
-    };
-    // get old category id from task id then compare it to new if changed update it
-    final oldTodo = await getTodo(
-      int.parse(todo.id),
-    );
-    if (oldTodo.categoryId != todo.categoryId) {
-      data['category_id'] = todo.categoryId.toString();
+    // print(
+    // 'before await: ${todo.title} ${todo.description} ${todo.dueDate} ${todo.categoryId} ${todo.isDone}${todo.id}}');
+    try {
+      final db = await openDB();
+      final data = {
+        'title': todo.title,
+        'description': todo.description,
+        'dueDate': todo.dueDate?.toUtc().toIso8601String(),
+        'createdAt': DateTime.now().toUtc().toIso8601String(),
+        'isDone': todo.isDone ? 1 : 0,
+        'category_id': todo.categoryId.toString(),
+      };
+      debugPrint("data: $data");
+      final id = await db.insert(
+        'todos',
+        data,
+        conflictAlgorithm: sql.ConflictAlgorithm.replace,
+      );
+      await db.close();
+      debugPrint("Todo added with ID: $id");
+      return id;
+    } catch (e) {
+      debugPrint("Error adding todo: $e");
+      rethrow;
     }
-
-    final id = await db.insert(
-      'todos',
-      data,
-      conflictAlgorithm: sql.ConflictAlgorithm.replace,
-    );
-    await db.close();
-    return id;
   }
+  // get old category id from task id then compare it to new if changed update it
+  // final oldTodo = await getTodo(
+  //   int.parse(todo.id),
+  // );
+  // if (oldTodo.categoryId != todo.categoryId) {
+  //   data['category_id'] = todo.categoryId.toString();
+  // }
 
   @override
   Future<List<Todo>> getTodos() async {
@@ -80,9 +90,16 @@ abstract class TodoLocalDataBaseImpl implements TodoLocalDataBase {
 
     final items = await db.query('todos', orderBy: 'id DESC');
     await db.close();
-    // Convert TodoModel to Todo entity
-    final todos = items.map((e) => TodoModel.fromJson(e).toEntity()).toList();
-    return todos;
+    print("items: $items");
+    //return todos;
+    return items.map((item) => TodoModel.fromJson(item).toEntity()).toList();
+    // Convert TodoModel to Todo entity and int id to String
+    // final todos = items.map((item) {
+    // final Todo todo = TodoModel.fromJson(item).toEntity();
+    // return todo;
+    // }).toList();
+    // print("--------------------------------------------- $todos");
+    // return todos;
   }
 
   @override
@@ -161,3 +178,7 @@ abstract class TodoLocalDataBaseImpl implements TodoLocalDataBase {
     }
   }
 }
+
+final todoLocalDataBaseProvider = Provider<TodoLocalDataBaseImpl>(
+  (ref) => TodoLocalDataBaseImpl(),
+);

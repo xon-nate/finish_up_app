@@ -19,12 +19,12 @@ class TodoModel extends Todo {
 
   factory TodoModel.fromJson(Map<String, dynamic> json) {
     return TodoModel(
-      id: json['id'] as String,
-      categoryId: json['categoryId'] as String,
+      id: json['id'].toString(),
+      categoryId: json['category_id'].toString(),
       title: json['title'] as String,
       description: json['description'] as String,
-      dueDate: json['dueDate'] as DateTime?,
-      isDone: json['isDone'] as bool,
+      dueDate: DateTime.parse(json['dueDate'] as String),
+      isDone: json['isDone'] == 1,
     );
   }
 

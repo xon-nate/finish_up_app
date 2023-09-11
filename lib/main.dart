@@ -58,18 +58,106 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            elevation: MaterialStateProperty.all(15),
+            surfaceTintColor: MaterialStateProperty.all(
+              Colors.transparent,
+            ),
+          ),
+        ),
         fontFamily: 'Kumbh',
         textTheme: const TextTheme(
           displayLarge: TextStyle(
             fontSize: 30,
+            fontFamily: 'Kumbh',
             fontWeight: FontWeight.w900,
-            color: Color(0xFF111111),
           ),
           headlineLarge: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
             color: Color(0xFF111111),
           ),
+          bodyMedium: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            borderSide: BorderSide(
+              color: Color(0xFF111111),
+            ),
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          filled: true,
+          fillColor: Color(0xFFF5F6F7),
+          hintStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFF111111),
+          ),
+        ),
+        dialogTheme: const DialogTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+          backgroundColor: Color(0xFFF3F3F3),
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.black,
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.black, // Adjust text color as needed
+          ),
+          contentTextStyle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color: Colors.black, // Adjust text color as needed
+          ),
+          elevation: 12,
+          actionsPadding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
+        ),
+        datePickerTheme: const DatePickerThemeData(
+          backgroundColor: Color(0xFFF3F3F3),
+          surfaceTintColor: Colors.transparent,
+        ),
+        timePickerTheme: const TimePickerThemeData(
+          backgroundColor: Color(0xFFF3F3F3),
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          elevation: 12,
+          modalBackgroundColor: Colors.white,
+          modalElevation: 12,
+          clipBehavior: Clip.antiAlias,
         ),
         colorScheme: ColorScheme.fromSwatch(
             primarySwatch: const MaterialColor(

@@ -4,6 +4,7 @@ import 'package:finish_up_app/features/todo/domain/repository/todo_repository.da
 import '../../../../core/errors/errors.dart';
 import '../database/todo_local_db.dart';
 import '../models/todo_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TodoLocalRepositoryImpl implements TodoRepository {
   TodoLocalDataBaseImpl todoLocalDataBase;
@@ -34,10 +35,13 @@ class TodoLocalRepositoryImpl implements TodoRepository {
 
   @override
   Future<Either<Failure, Todo>> addTodo(Todo newTodo) async {
+    print("Local Repository addTodo : ${newTodo.toString()}");
+
     return _execute(() async {
       await todoLocalDataBase.addTodo(
         _mapTodoToModel(newTodo),
       );
+      print("TODOOOOOOO added successfully");
       return newTodo;
     });
   }
@@ -80,3 +84,9 @@ class TodoLocalRepositoryImpl implements TodoRepository {
     });
   }
 }
+
+final todoLocalRepositoryProvider = Provider<TodoLocalRepositoryImpl>(
+  (ref) => TodoLocalRepositoryImpl(
+    todoLocalDataBase: ref.watch(todoLocalDataBaseProvider),
+  ),
+);

@@ -23,6 +23,7 @@ dependencies:
   sqflite: ^2.3.0
   cloud_firestore: ^4.9.1
   dartz: ^0.10.1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

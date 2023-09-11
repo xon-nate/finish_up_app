@@ -14,4 +14,9 @@ class Todo {
     required this.description,
     required this.isDone,
   });
+
+  @override
+  String toString() {
+    return 'Todo(id: $id, categoryId: $categoryId, title: $title, description: $description, dueDate: $dueDate, isDone: $isDone)';
+  }
 }
