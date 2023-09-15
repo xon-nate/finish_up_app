@@ -184,6 +184,56 @@ class PickDateTimeWidget extends StatelessWidget {
   }
 }
 
+class DateTimeFormField extends FormField<DateTime> {
+  DateTimeFormField({
+    Key? key,
+    FormFieldSetter<DateTime>? onSaved,
+    FormFieldValidator<DateTime>? validator,
+    DateTime? initialValue,
+  }) : super(
+          key: key,
+          onSaved: onSaved,
+          validator: validator,
+          initialValue: initialValue,
+          builder: (FormFieldState<DateTime> state) {
+            return InkWell(
+              onTap: () async {
+                final selectedDate = await showDateTimePicker(
+                  context: state.context,
+                  initialDate: state.value ?? DateTime.now(),
+                );
+                if (selectedDate != null) {
+                  state.didChange(selectedDate);
+                }
+                debugPrint("Selected Date: $selectedDate");
+              },
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: 'Date & Time',
+                  errorText: state.errorText,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      state.value != null
+                          ? DateFormat('yyyy-MM-dd HH:mm').format(state.value!)
+                          : 'Select Date & Time',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.normal,
+                        color: state.value != null ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                    const Icon(Icons.calendar_today),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+}
+
 Future<DateTime?> showDateTimePicker({
   required BuildContext context,
   DateTime? initialDate,

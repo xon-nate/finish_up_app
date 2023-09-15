@@ -27,7 +27,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final categories = ref.watch(categoryListModel).categories;
-    selectedCategory ??= categories.first;
+
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -44,6 +44,10 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                     fontSize: 30,
                     fontWeight: FontWeight.w900,
                   ),
+                ),
+                Divider(
+                  thickness: 2,
+                  color: Colors.grey[300],
                 ),
                 const SizedBox(
                   height: 16,
@@ -66,13 +70,29 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                 LabeledInputWidget(
                   label: 'Category',
                   inputWidget: DropdownButtonFormField<Category>(
+                    iconSize: 30,
+                    isExpanded: true,
+                    //ceneter dropdown items
+                    menuMaxHeight: MediaQuery.sizeOf(context).height / 3,
+                    //change color of scroll bar
+
+                    dropdownColor: Colors.grey[300],
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select a category';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Select a category',
+                    ),
                     items: categories.map((category) {
                       return DropdownMenuItem<Category>(
                         value: category,
                         child: Text(category.name),
                       );
                     }).toList(),
-                    value: selectedCategory,
+                    // value: selectedCategory,
                     onChanged: (Category? value) {
                       if (value != null) {
                         setState(() {
@@ -82,9 +102,21 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                     },
                   ),
                 ),
-                PickDateTimeWidget(
-                  dateTimeController: dateTimeController,
-                  formKey: formKey,
+                // PickDateTimeWidget(
+                //   dateTimeController: dateTimeController,
+                //   formKey: formKey,
+                // ),
+                DateTimeFormField(
+                  onSaved: (dateTime) {
+                    dateTimeController.value = dateTime;
+                    debugPrint('Date Time: ${dateTimeController.value}');
+                  },
+                  validator: (dateTime) {
+                    if (dateTime == null) {
+                      return 'Please select a date & time';
+                    }
+                    return null;
+                  },
                 ),
                 LabeledInputWidget(
                   label: 'Description',
@@ -104,6 +136,8 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                 CenteredCallToActionButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
+                      formKey.currentState!.save(); // This triggers onSaved
+
                       debugPrint('Task Name: ${taskNameController.text}');
                       debugPrint('Description: ${descriptionController.text}');
                       debugPrint('Due Date: ${dateTimeController.value}');

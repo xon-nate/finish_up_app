@@ -23,7 +23,7 @@ class TodoModel extends Todo {
       categoryId: json['category_id'].toString(),
       title: json['title'] as String,
       description: json['description'] as String,
-      dueDate: DateTime.parse(json['dueDate'] as String),
+      dueDate: DateTime.parse(json['dueDate'].toString()),
       isDone: json['isDone'] == 1,
     );
   }
