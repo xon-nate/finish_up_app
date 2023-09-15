@@ -19,6 +19,15 @@ class TaskCategoryWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: categoryColorPair.color,
         borderRadius: BorderRadius.circular(5),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 2,
+            offset: Offset(0, 0),
+            // blurStyle: BlurStyle.inner,
+            color: Colors.black12,
+            spreadRadius: 1,
+          ),
+        ],
         border: Border.all(
           color: categoryColorPair.darkColor,
           width: 1.6,

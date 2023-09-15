@@ -46,11 +46,16 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
     )
   ''');
 
-    //insert some data if table is empty
     final List<Map<String, dynamic>> maps = await database.query('categories');
     if (maps.isEmpty) {
       print('Inserting some raw data into the categories table...');
       final List<CategoryModel> categories = [
+        CategoryModel(
+          id: '0',
+          name: 'General',
+          iconIndex: 17,
+          colorIndex: 7,
+        ),
         CategoryModel(
           id: '1',
           name: 'Design',

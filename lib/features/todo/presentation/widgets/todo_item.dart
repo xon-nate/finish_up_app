@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../category/domain/entities/category.dart';
 import '../../../category/presentation/providers/categories_provider.dart';
@@ -33,24 +34,18 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
       (ref) => ItemState(widget.isCompleted),
     );
     //print all params
-    debugPrint('isCompleted: ${widget.isCompleted}');
-    debugPrint('todo: ${widget.todo}');
-    debugPrint('category: ${widget.category}');
+    // debugPrint('isCompleted: ${widget.isCompleted}');
+    // debugPrint('todo: ${widget.todo}');
+    // debugPrint('category: ${widget.category}');
   }
 
   @override
   Widget build(BuildContext context) {
     final isCompletedValue = ref.watch(isCompletedProvider);
-    debugPrint('category id: ${widget.category.id}');
-    debugPrint('category name: ${widget.category.name}');
-    debugPrint('category icon: ${widget.category.icon}');
-    debugPrint('category color: ${widget.category.categoryColor}');
-    // final category = Category(
-    //   id: 1.toString(),
-    //   name: 'Design',
-    //   icon: Icons.design_services,
-    //   categoryColor: categoryColorPair,
-    // );
+    // debugPrint('category id: ${widget.category.id}');
+    // debugPrint('category name: ${widget.category.name}');
+    // debugPrint('category icon: ${widget.category.icon}');
+    // debugPrint('category color: ${widget.category.categoryColor}');
 
     return Stack(
       clipBehavior: Clip.none,
@@ -60,6 +55,15 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
           margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: isCompletedValue
+                    ? const Color(0xFF006ED4).withOpacity(0.2)
+                    : const Color(0xFF111111).withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
             border: Border.all(
               color: isCompletedValue
                   ? const Color(0xFF006ED4)
@@ -74,76 +78,10 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               onTap: () {
-                //show dialog are you sure
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text(
-                        'Mark this task as completed?',
-                      ),
-                      // surfaceTintColor: const Color(0xFF006ed4),
-                      icon: const Icon(
-                        Icons.info,
-                        size: 30,
-                      ),
-                      iconColor: const Color(0xFF006ed4),
-                      semanticLabel: 'Mark this task as completed?',
-                      content: const Text(
-                        'Are you sure you want to mark this task as completed?',
-                        textAlign: TextAlign.center,
-                      ),
-                      actionsAlignment: MainAxisAlignment.spaceBetween,
-
-                      actions: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  ref
-                                      .read(isCompletedProvider.notifier)
-                                      .toggle();
-                                  Navigator.of(context).pop();
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                    const Color(0xFF2C2C2C),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Confirm',
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
+                context.push(
+                  '/edit',
+                  // arguments: widget.todo,
                 );
-                debugPrint('isCompleted: $isCompletedValue');
               },
               tileColor: Colors.transparent,
               trailing: AnimatedSwitcher(
@@ -153,7 +91,81 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
                 },
                 child: IconButton(
                   onPressed: () {
-                    ref.read(isCompletedProvider.notifier).toggle();
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(
+                            isCompletedValue
+                                ? 'Mark as not completed?'
+                                : 'Mark as completed?',
+                          ),
+                          // surfaceTintColor: const Color(0xFF006ed4),
+                          icon: const Icon(
+                            Icons.info,
+                            size: 30,
+                          ),
+                          iconColor: const Color(0xFF006ed4),
+                          semanticLabel: isCompletedValue
+                              ? 'Mark as not completed?'
+                              : 'Mark as completed?',
+                          content: Text(
+                            isCompletedValue
+                                ? 'Are you sure you want to mark this task as not completed (pending)?'
+                                : 'Are you sure you want to mark this task as completed?',
+                            textAlign: TextAlign.center,
+                          ),
+                          actionsAlignment: MainAxisAlignment.spaceBetween,
+
+                          actions: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      ref
+                                          .read(isCompletedProvider.notifier)
+                                          .toggle();
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        const Color(0xFF2C2C2C),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Confirm',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   key: UniqueKey(),
                   icon: Icon(

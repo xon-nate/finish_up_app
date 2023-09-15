@@ -9,7 +9,7 @@ import '../../domain/repository/category_repository.dart';
 import '../database/category_local_db.dart';
 
 class CategoryLocalRepositoryImpl implements CategoryRepository {
-  //declare localdb inst
+  //declare local db inst
   final CategoryLocalDataBase localDataBase;
   CategoryLocalRepositoryImpl({required this.localDataBase});
 

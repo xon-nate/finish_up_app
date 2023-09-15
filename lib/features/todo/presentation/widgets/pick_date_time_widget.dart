@@ -5,49 +5,181 @@ import '../controllers/date_time_controller.dart';
 
 class PickDateTimeWidget extends StatelessWidget {
   const PickDateTimeWidget({
-    super.key,
+    Key? key,
     required this.dateTimeController,
-  });
+    required this.formKey,
+  }) : super(key: key);
 
   final DateTimeController dateTimeController;
+  final GlobalKey<FormState> formKey;
 
   @override
   Widget build(BuildContext context) {
-    String buttonText = 'Pick Date';
+    String buttonText = 'Time & Date';
+    String? chosenDateTimeText;
+
     if (dateTimeController.value != null) {
-      //show date time in yyyy-MM-dd hh:mm format
-      buttonText =
+      buttonText = 'Change Date';
+      chosenDateTimeText =
           DateFormat('yyyy-MM-dd hh:mm').format(dateTimeController.value!);
     }
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Flexible(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  side: const BorderSide(
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () async {
+                  final pickedDateTime =
+                      await showDateTimePicker(context: context);
+                  if (pickedDateTime != null) {
+                    dateTimeController.value = pickedDateTime;
+                    if (formKey.currentState != null) {
+                      formKey.currentState!.validate();
+                    }
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        buttonText,
+                        style: const TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const Icon(Icons.edit),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Flexible(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  side: const BorderSide(
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Pick Day'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                dateTimeController.value =
+                                    DateTime.now().add(const Duration(days: 1));
+                                Navigator.pop(context);
+                                if (formKey.currentState != null) {
+                                  formKey.currentState!.validate();
+                                }
+                              },
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Tomorrow'),
+                                  Icon(Icons.date_range),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                dateTimeController.value =
+                                    DateTime.now().add(const Duration(days: 7));
+                                Navigator.pop(context);
+                                if (formKey.currentState != null) {
+                                  formKey.currentState!.validate();
+                                }
+                              },
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Next Week'),
+                                  Icon(Icons.calendar_today),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                dateTimeController.value = DateTime.now()
+                                    .add(const Duration(days: 30));
+                                Navigator.pop(context);
+                                if (formKey.currentState != null) {
+                                  formKey.currentState!.validate();
+                                }
+                              },
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Next Month'),
+                                  Icon(Icons.event),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Pick Day',
+                        style: TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(Icons.date_range),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        side: const BorderSide(
-          width: 1,
-          style: BorderStyle.solid,
-        ),
-        elevation: 0,
-      ),
-      onPressed: () async {
-        final pickedDateTime = await showDateTimePicker(context: context);
-        if (pickedDateTime != null) {
-          dateTimeController.value =
-              pickedDateTime; // Set the selected date and time
-        }
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            buttonText,
-            style: const TextStyle(fontSize: 16),
+        if (chosenDateTimeText != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              chosenDateTimeText,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.green,
+              ),
+            ),
           ),
-          const Icon(Icons.date_range),
-        ],
-      ),
+      ],
     );
   }
 }
