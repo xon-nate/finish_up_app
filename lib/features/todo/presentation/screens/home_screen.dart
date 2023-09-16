@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../category/domain/entities/category.dart';
 import '../providers/todo_controller.dart';
 import '../widgets/todo_item.dart';
+import '../widgets/todo_item_shimmer.dart';
 import 'add_todo.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -106,7 +107,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class TodoList extends StatelessWidget {
-  const TodoList({super.key});
+  const TodoList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -114,59 +115,86 @@ class TodoList extends StatelessWidget {
       builder: (context, ref, child) {
         final todos = ref.watch(todosListState).todos;
 
-        return ListView.builder(
-          physics: const ClampingScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: todos.length,
-          itemBuilder: (_, index) {
-            final todo = todos[index];
-            final categoryFuture =
-                ref.watch(categoryListModel).getCategoryById(todo.categoryId);
-
-            return FutureBuilder<Category>(
-              future: categoryFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // Return shimmer widget here
-                  return const TodoItemShimmer();
-                } else if (snapshot.hasError) {
-                  // Handle error state
-
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  final category = snapshot.data;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: TodoItemWidget(
-                      key: ValueKey(todo.id),
-                      todo: todo,
-                      isCompleted: todo.isDone,
-                      category: category!,
+        return todos.isEmpty
+            //if empty return msg that says no tasks yet, add here and hsows an arrow towards the floating action button
+            ? const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No tasks yet',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF111111),
+                      ),
                     ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Add a task to get started',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF7B8088),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : ListView.builder(
+                physics: const ClampingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: todos.length,
+                itemBuilder: (_, index) {
+                  final todo = todos[index];
+                  final categoryFuture = ref
+                      .watch(categoryListModel)
+                      .getCategoryById(todo.categoryId);
+
+                  return FutureBuilder<Category>(
+                    future: categoryFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Return shimmer widget here while loading the category
+                        return const TodoListShimmer();
+                      } else if (snapshot.hasError) {
+                        // Handle error state
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final category = snapshot.data;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: TodoItemWidget(
+                            key: ValueKey(todo.id),
+                            todo: todo,
+                            isCompleted: todo.isDone,
+                            category: category!,
+                          ),
+                        );
+                      }
+                    },
                   );
-                }
-              },
-            );
-          },
-        );
+                },
+              );
       },
     );
   }
 }
 
-class TodoItemShimmer extends StatelessWidget {
-  const TodoItemShimmer({super.key});
+class TodoListShimmer extends StatelessWidget {
+  const TodoListShimmer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: const SizedBox(
-        height: 100, // Adjust the height as needed
-      ),
+    return ListView.builder(
+      physics: const ClampingScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: 4, // Show 4 shimmer placeholders
+      itemBuilder: (_, __) {
+        return const TodoItemShimmer();
+      },
     );
   }
 }

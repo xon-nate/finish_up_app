@@ -1,7 +1,7 @@
+import 'package:finish_up_app/features/todo/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/date_time_controller.dart';
-import '../widgets/pick_date_time_widget.dart';
 
 //screen to edit todo item details
 class EditTodoScreen extends StatelessWidget {
@@ -14,12 +14,7 @@ class EditTodoScreen extends StatelessWidget {
         title: const Text('Edit Todo'),
       ),
       //body is form with fields to edit todo item details title, description, category, due date
-      body: TodoForm(
-        titleController: TextEditingController(),
-        descriptionController: TextEditingController(),
-        initialCategory: 'Category 1',
-        dateTimeController: DateTimeController(),
-      ),
+      body: const TodoListShimmer(),
     );
   }
 } // Import your PickDateTimeWidget here

@@ -219,10 +219,10 @@ class DateTimeFormField extends FormField<DateTime> {
                       state.value != null
                           ? DateFormat('yyyy-MM-dd HH:mm').format(state.value!)
                           : 'Select Date & Time',
-                      style: TextStyle(
-                        fontSize: 16.0,
+                      style: const TextStyle(
+                        fontSize: 15.0,
                         fontWeight: FontWeight.normal,
-                        color: state.value != null ? Colors.black : Colors.grey,
+                        color: Colors.black,
                       ),
                     ),
                     const Icon(Icons.calendar_today),
