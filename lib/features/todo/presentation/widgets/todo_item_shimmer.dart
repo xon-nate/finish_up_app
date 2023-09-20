@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+class TodoListShimmer extends StatelessWidget {
+  const TodoListShimmer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: const ClampingScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: 4, // Show 4 shimmer placeholders
+      itemBuilder: (_, __) {
+        return const TodoItemShimmer();
+      },
+    );
+  }
+}
+
 class TodoItemShimmer extends StatelessWidget {
   const TodoItemShimmer({Key? key}) : super(key: key);
 

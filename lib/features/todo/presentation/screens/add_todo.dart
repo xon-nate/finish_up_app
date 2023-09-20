@@ -45,6 +45,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
             },
             onDateSaved: (dateTime) {
               dateTimeController.value = dateTime;
+              debugPrint('onDateSaved: ${dateTimeController.value}');
             },
             onSavePressed: () {
               if (formKey.currentState != null &&
@@ -57,6 +58,12 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                   title: taskNameController.text,
                   categoryId: selectedCategory!.id,
                 );
+                debugPrint('New isDone: ${newTodo.isDone}');
+                debugPrint('New dueDate: ${newTodo.dueDate}');
+                debugPrint('New description: ${newTodo.description}');
+                debugPrint('New title: ${newTodo.title}');
+                debugPrint('New categoryId: ${newTodo.categoryId}');
+
                 ref.read(todosListState.notifier).addTodo(newTodo);
                 Navigator.of(context).pop();
               }
@@ -74,12 +81,12 @@ class TodoForm extends StatefulWidget {
   final TextEditingController descriptionController;
   final DateTimeController dateTimeController;
   final List<Category> categories;
-  Category? selectedCategory;
+  final Category? selectedCategory;
   final Function(Category?) onCategoryChanged;
   final Function(DateTime?) onDateSaved;
   final Function() onSavePressed;
 
-  TodoForm({
+  const TodoForm({
     super.key,
     required this.formKey,
     required this.taskNameController,
@@ -132,26 +139,17 @@ class TodoFormState extends State<TodoForm> {
                   child: Text(category.name),
                 );
               }).toList(),
-              value:
-                  widget.selectedCategory, // Use the selected category variable
-              onChanged: (Category? category) {
-                setState(() {
-                  widget.selectedCategory =
-                      category; // Update the selected category
-                });
-                widget.onCategoryChanged(category);
-              },
-              validator: (selectedCategory) {
-                // Add validator function
-                if (selectedCategory == null) {
-                  return 'Please select a category';
-                }
-                return null;
-              },
+              value: widget.selectedCategory,
+              onChanged: widget.onCategoryChanged,
             ),
           ),
           DateTimeFormField(
-            onSaved: widget.onDateSaved,
+            //TODO this doesnt work fix it
+            onSaved: (dateTime) {
+              widget.onDateSaved(dateTime);
+            },
+            initialValue: widget.dateTimeController.value,
+
             validator: (dateTime) {
               if (dateTime == null) {
                 return 'Please select a date & time';

@@ -204,6 +204,8 @@ class DateTimeFormField extends FormField<DateTime> {
                 );
                 if (selectedDate != null) {
                   state.didChange(selectedDate);
+                  // Manually trigger onDateSaved
+                  state.save();
                 }
                 debugPrint("Selected Date: $selectedDate");
               },

@@ -116,31 +116,7 @@ class TodoList extends StatelessWidget {
         final todos = ref.watch(todosListState).todos;
 
         return todos.isEmpty
-            //if empty return msg that says no tasks yet, add here and hsows an arrow towards the floating action button
-            ? const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'No tasks yet',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF111111),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Add a task to get started',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF7B8088),
-                      ),
-                    ),
-                  ],
-                ),
-              )
+            ? const TodoListShimmer() // Show shimmer placeholders if todos are empty
             : ListView.builder(
                 physics: const ClampingScrollPhysics(),
                 shrinkWrap: true,
@@ -150,13 +126,20 @@ class TodoList extends StatelessWidget {
                   final categoryFuture = ref
                       .watch(categoryListModel)
                       .getCategoryById(todo.categoryId);
+                  //wait 10 seconds
 
                   return FutureBuilder<Category>(
                     future: categoryFuture,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        // Return shimmer widget here while loading the category
-                        return const TodoListShimmer();
+                        return ListView.builder(
+                          physics: const ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: 4,
+                          itemBuilder: (_, __) {
+                            return const TodoItemShimmer();
+                          },
+                        );
                       } else if (snapshot.hasError) {
                         // Handle error state
                         return Text('Error: ${snapshot.error}');
@@ -178,22 +161,6 @@ class TodoList extends StatelessWidget {
                   );
                 },
               );
-      },
-    );
-  }
-}
-
-class TodoListShimmer extends StatelessWidget {
-  const TodoListShimmer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: const ClampingScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: 4, // Show 4 shimmer placeholders
-      itemBuilder: (_, __) {
-        return const TodoItemShimmer();
       },
     );
   }
