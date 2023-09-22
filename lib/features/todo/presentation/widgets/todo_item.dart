@@ -78,10 +78,14 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               onTap: () {
-                context.push(
-                  '/edit',
-                  // arguments: widget.todo,
-                );
+                //navigate to edit todo screen using this
+                // GoRoute(
+                // path: '/edit/:todoId',
+                // builder: (context, state) => EditTodoScreen(
+                // todoId: state.pathParameters['todoId']!,
+                // ),
+                // ),
+                context.push('/edit/${widget.todo.id}');
               },
               tileColor: Colors.transparent,
               trailing: AnimatedSwitcher(

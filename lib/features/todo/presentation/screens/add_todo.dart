@@ -9,6 +9,7 @@ import '../providers/todo_controller.dart';
 import '../widgets/centered_button.dart';
 import '../widgets/labeled_input_widget.dart';
 import '../widgets/pick_date_time_widget.dart';
+import '../widgets/todo_form.dart';
 
 class AddTodoBottomSheet extends ConsumerStatefulWidget {
   const AddTodoBottomSheet({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final categories = ref.watch(categoryListModel).categories;
-
+    selectedCategory = categories.first;
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -39,7 +40,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
             descriptionController: descriptionController,
             dateTimeController: dateTimeController,
             categories: categories,
-            selectedCategory: selectedCategory,
+            // selectedCategory: selectedCategory,
             onCategoryChanged: (category) {
               selectedCategory = category;
             },
@@ -70,112 +71,6 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
             },
           ),
         ),
-      ),
-    );
-  }
-}
-
-class TodoForm extends StatefulWidget {
-  final GlobalKey<FormState> formKey;
-  final TextEditingController taskNameController;
-  final TextEditingController descriptionController;
-  final DateTimeController dateTimeController;
-  final List<Category> categories;
-  final Category? selectedCategory;
-  final Function(Category?) onCategoryChanged;
-  final Function(DateTime?) onDateSaved;
-  final Function() onSavePressed;
-
-  const TodoForm({
-    super.key,
-    required this.formKey,
-    required this.taskNameController,
-    required this.descriptionController,
-    required this.dateTimeController,
-    required this.categories,
-    required this.selectedCategory,
-    required this.onCategoryChanged,
-    required this.onDateSaved,
-    required this.onSavePressed,
-  });
-
-  @override
-  TodoFormState createState() => TodoFormState();
-}
-
-class TodoFormState extends State<TodoForm> {
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      key: widget.formKey,
-      child: Column(
-        children: [
-          LabeledInputWidget(
-            label: 'Task Name',
-            inputWidget: TextFormField(
-              controller: widget.taskNameController,
-              decoration: const InputDecoration(
-                hintText: 'Enter task name',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a task name';
-                }
-                return null;
-              },
-            ),
-          ),
-          LabeledInputWidget(
-            label: 'Category',
-            inputWidget: DropdownButtonFormField<Category>(
-              iconSize: 30,
-              isExpanded: true,
-              menuMaxHeight: MediaQuery.sizeOf(context).height / 3,
-              decoration: const InputDecoration(hintText: 'Select a category'),
-              items: widget.categories.map((category) {
-                return DropdownMenuItem<Category>(
-                  value: category,
-                  child: Text(category.name),
-                );
-              }).toList(),
-              value: widget.selectedCategory,
-              onChanged: widget.onCategoryChanged,
-            ),
-          ),
-          DateTimeFormField(
-            //TODO this doesnt work fix it
-            onSaved: (dateTime) {
-              widget.onDateSaved(dateTime);
-            },
-            initialValue: widget.dateTimeController.value,
-
-            validator: (dateTime) {
-              if (dateTime == null) {
-                return 'Please select a date & time';
-              }
-              return null;
-            },
-          ),
-          LabeledInputWidget(
-            label: 'Description',
-            inputWidget: TextFormField(
-              controller: widget.descriptionController,
-              decoration: const InputDecoration(
-                hintText: 'Enter description',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a description';
-                }
-                return null;
-              },
-            ),
-          ),
-          CenteredCallToActionButton(
-            onPressed: widget.onSavePressed,
-          ),
-        ],
       ),
     );
   }

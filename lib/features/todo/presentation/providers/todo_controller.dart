@@ -27,12 +27,6 @@ class Todos {
 }
 
 class TodosStateNotifier extends StateNotifier<Todos> {
-  // final formKey = GlobalKey<FormState>();
-  final titleController = TextEditingController();
-  final categoryController = TextEditingController();
-  final descriptionController = TextEditingController();
-  final dateTimeController = DateTimeController();
-
   final ProviderContainer ref;
 
   TodosStateNotifier({required this.ref}) : super(Todos(todos: [])) {
@@ -46,8 +40,6 @@ class TodosStateNotifier extends StateNotifier<Todos> {
   List<Todo> get todos => state.todos;
 
   Future<void> addTodo(Todo todo) async {
-    debugPrint(
-        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA${todo.dueDate.toString()}');
     debugPrint(state.todos.toString());
     await ref.read(addTodoUseCaseProvider).call(
           Params(

@@ -10,9 +10,13 @@ final appRouter = GoRouter(
       path: '/',
       builder: (context, state) => const HomeScreen(),
     ),
+    //                context.go('/edit/${widget.todo.id}');
+
     GoRoute(
-      path: '/edit',
-      builder: (context, state) => const EditTodoScreen(),
+      path: '/edit/:todoId',
+      builder: (context, state) => EditTodoScreen(
+        todoId: state.pathParameters['todoId']!,
+      ),
     ),
   ],
 );

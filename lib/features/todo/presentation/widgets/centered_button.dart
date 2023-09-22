@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class CenteredCallToActionButton extends StatelessWidget {
   final Function() onPressed;
+  final String label;
   const CenteredCallToActionButton({
     super.key,
     required this.onPressed,
+    required this.label,
   });
 
   @override
@@ -15,9 +17,9 @@ class CenteredCallToActionButton extends StatelessWidget {
         minimumSize: const Size(double.infinity, 50),
         backgroundColor: const Color(0xFF2C2C2C),
       ),
-      child: const Text(
-        'Add Task',
-        style: TextStyle(
+      child: Text(
+        label,
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
           fontWeight: FontWeight.w600,
