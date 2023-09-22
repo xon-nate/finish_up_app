@@ -52,6 +52,18 @@ class TodosStateNotifier extends StateNotifier<Todos> {
     debugPrint(state.todos.toString());
   }
 
+  Future<void> updateTodo(Todo todo) async {
+    debugPrint(todo.toString());
+    await ref.read(updateTodoUseCaseProvider).call(
+          Params(
+            todo,
+          ),
+        );
+    await getTodos().then((value) {
+      state = Todos(todos: value);
+    });
+  }
+
   //get todos
   Future<List<Todo>> getTodos() async {
     final todos = await ref.read(getAllTodosUseCaseProvider).call(NoParams());

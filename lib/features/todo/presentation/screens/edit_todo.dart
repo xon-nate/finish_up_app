@@ -56,7 +56,7 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
             formKey: formKey,
             categories: categories,
             onCategoryChanged: (category) {
-              // selectedCategory = category;
+              selectedCategory = category;
             },
             taskNameController: taskNameController,
             descriptionController: descriptionController,
@@ -66,7 +66,24 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
               debugPrint('onDateSaved: ${dateTimeController.value}');
             },
             onSavePressed: () {
-              Navigator.of(context).pop();
+              if (formKey.currentState != null &&
+                  formKey.currentState!.validate()) {
+                final Todo newTodo = Todo(
+                  id: todo.id,
+                  isDone: todo.isDone,
+                  dueDate: dateTimeController.value,
+                  description: descriptionController.text,
+                  title: taskNameController.text,
+                  categoryId: selectedCategory!.id,
+                );
+                ref.read(todosListState.notifier).updateTodo(newTodo);
+                debugPrint('New isDone: ${newTodo.isDone}');
+                debugPrint('New dueDate: ${newTodo.dueDate}');
+                debugPrint('New description: ${newTodo.description}');
+                debugPrint('New title: ${newTodo.title}');
+                debugPrint('New categoryId: ${newTodo.categoryId}');
+                Navigator.pop(context);
+              }
             },
           ),
         ),
