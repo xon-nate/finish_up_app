@@ -74,4 +74,10 @@ class TodoRemoteRepositoryImpl implements TodoRepository {
       return updatedTodo.isDone;
     });
   }
+
+  @override
+  Future<Either<Failure, List<Todo>>> getTodosByCategory(String categoryId) {
+    // TODO: implement getTodosByCategory
+    throw UnimplementedError();
+  }
 }

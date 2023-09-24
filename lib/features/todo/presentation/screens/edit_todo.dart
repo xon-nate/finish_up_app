@@ -37,6 +37,7 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
     selectedCategory = categories.first;
     final todo = getTodo(widget.todoId);
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
         centerTitle: true,
         title: const Text(

@@ -138,31 +138,39 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
   @override
   Future<List<Category>> getCategories() async {
     final db = await openDB();
-    final List<Map<String, dynamic>> maps = await db.query('categories');
-    return List.generate(maps.length, (i) {
-      return CategoryModel(
-        id: maps[i]['id'].toString(),
-        name: maps[i]['name'],
-        iconIndex: maps[i]['iconIndex'],
-        colorIndex: maps[i]['colorIndex'],
-      );
-    });
+    try {
+      final List<Map<String, dynamic>> maps = await db.query('categories');
+      return List.generate(maps.length, (i) {
+        return CategoryModel(
+          id: maps[i]['id'].toString(),
+          name: maps[i]['name'],
+          iconIndex: maps[i]['iconIndex'],
+          colorIndex: maps[i]['colorIndex'],
+        );
+      });
+    } finally {
+      await db.close();
+    }
   }
 
   @override
   Future<Category> getCategory(int id) async {
     final db = await openDB();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'categories',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return CategoryModel(
-      id: maps[0]['id'].toString(),
-      name: maps[0]['name'],
-      iconIndex: maps[0]['iconIndex'],
-      colorIndex: maps[0]['colorIndex'],
-    );
+    try {
+      final List<Map<String, dynamic>> maps = await db.query(
+        'categories',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      return CategoryModel(
+        id: maps[0]['id'].toString(),
+        name: maps[0]['name'],
+        iconIndex: maps[0]['iconIndex'],
+        colorIndex: maps[0]['colorIndex'],
+      );
+    } finally {
+      await db.close();
+    }
   }
 
   @override

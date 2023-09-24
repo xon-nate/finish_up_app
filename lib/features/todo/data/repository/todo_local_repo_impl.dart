@@ -83,6 +83,14 @@ class TodoLocalRepositoryImpl implements TodoRepository {
       return result;
     });
   }
+
+  @override
+  Future<Either<Failure, List<Todo>>> getTodosByCategory(String categoryId) {
+    return _execute(() async {
+      final todos = await todoLocalDataBase.getTodosByCategory(categoryId);
+      return todos;
+    });
+  }
 }
 
 final todoLocalRepositoryProvider = Provider<TodoLocalRepositoryImpl>(

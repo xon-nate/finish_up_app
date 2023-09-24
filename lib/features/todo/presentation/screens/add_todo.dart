@@ -34,41 +34,56 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
       child: Container(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
-          child: TodoForm(
-            formKey: formKey,
-            taskNameController: taskNameController,
-            descriptionController: descriptionController,
-            dateTimeController: dateTimeController,
-            categories: categories,
-            // selectedCategory: selectedCategory,
-            onCategoryChanged: (category) {
-              selectedCategory = category;
-            },
-            onDateSaved: (dateTime) {
-              dateTimeController.value = dateTime;
-              debugPrint('onDateSaved: ${dateTimeController.value}');
-            },
-            onSavePressed: () {
-              if (formKey.currentState != null &&
-                  formKey.currentState!.validate()) {
-                final Todo newTodo = Todo(
-                  id: DateTime.now().toString(),
-                  isDone: false,
-                  dueDate: dateTimeController.value,
-                  description: descriptionController.text,
-                  title: taskNameController.text,
-                  categoryId: selectedCategory!.id,
-                );
-                debugPrint('New isDone: ${newTodo.isDone}');
-                debugPrint('New dueDate: ${newTodo.dueDate}');
-                debugPrint('New description: ${newTodo.description}');
-                debugPrint('New title: ${newTodo.title}');
-                debugPrint('New categoryId: ${newTodo.categoryId}');
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Add Todo',
+                    style: Theme.of(context).textTheme.displayLarge),
+              ),
+              const Divider(
+                color: Colors.grey,
+                thickness: 1,
+              ),
+              TodoForm(
+                formKey: formKey,
+                taskNameController: taskNameController,
+                descriptionController: descriptionController,
+                dateTimeController: dateTimeController,
+                categories: categories,
+                // selectedCategory: selectedCategory,
+                onCategoryChanged: (category) {
+                  selectedCategory = category;
+                },
+                onDateSaved: (dateTime) {
+                  dateTimeController.value = dateTime;
+                  debugPrint('onDateSaved: ${dateTimeController.value}');
+                },
+                onSavePressed: () {
+                  if (formKey.currentState != null &&
+                      formKey.currentState!.validate()) {
+                    final Todo newTodo = Todo(
+                      id: DateTime.now().toString(),
+                      isDone: false,
+                      dueDate: dateTimeController.value,
+                      description: descriptionController.text,
+                      title: taskNameController.text,
+                      categoryId: selectedCategory!.id,
+                    );
+                    debugPrint('New isDone: ${newTodo.isDone}');
+                    debugPrint('New dueDate: ${newTodo.dueDate}');
+                    debugPrint('New description: ${newTodo.description}');
+                    debugPrint('New title: ${newTodo.title}');
+                    debugPrint('New categoryId: ${newTodo.categoryId}');
 
-                ref.read(todosListState.notifier).addTodo(newTodo);
-                Navigator.of(context).pop();
-              }
-            },
+                    ref.read(todosListState.notifier).addTodo(newTodo);
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),

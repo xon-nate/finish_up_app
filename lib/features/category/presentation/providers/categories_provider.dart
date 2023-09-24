@@ -21,6 +21,7 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
   CategoryStateNotifier({required this.ref})
       : super(Categories(categories: [])) {
     loadCategories();
+    print("CategoryStateNotifier: $state");
   }
 
   void loadCategories() async {
@@ -32,7 +33,10 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
     final categories =
         await ref.read(getAllCategoriesUseCaseProvider).call(NoParams());
 
-    return categories.fold((l) => [], (r) => r);
+    return await categories.fold(
+      (l) => [],
+      (r) => r,
+    );
   }
 
   List<Category> get categories => state.categories;

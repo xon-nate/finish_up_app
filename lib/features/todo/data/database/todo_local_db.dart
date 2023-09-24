@@ -10,6 +10,7 @@ abstract class TodoLocalDataBase {
   Future<void> createTables(sql.Database database);
   Future<List<Todo>> getTodos();
   Future<Todo> getTodo(int id);
+  Future<List<Todo>> getTodosByCategory(String categoryId);
   Future<int> addTodo(TodoModel todo);
   Future<int> updateTodo(TodoModel todo);
   Future<bool> updateTodoStatus(int id, bool isDone);
@@ -87,20 +88,23 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
   @override
   Future<List<Todo>> getTodos() async {
     final db = await openDB();
+    try {
+      final items = await db.query('todos', orderBy: 'id DESC');
 
-    final items = await db.query('todos', orderBy: 'id DESC');
-    await db.close();
-    print("items: $items");
-    //return todos;
-    return items.map((item) => TodoModel.fromJson(item).toEntity()).toList();
-    // Convert TodoModel to Todo entity and int id to String
-    // final todos = items.map((item) {
-    // final Todo todo = TodoModel.fromJson(item).toEntity();
-    // return todo;
-    // }).toList();
-    // print("--------------------------------------------- $todos");
-    // return todos;
+      print("items: $items");
+      //return todos;
+      return items.map((item) => TodoModel.fromJson(item).toEntity()).toList();
+    } finally {
+      await db.close();
+    }
   }
+  // Convert TodoModel to Todo entity and int id to String
+  // final todos = items.map((item) {
+  // final Todo todo = TodoModel.fromJson(item).toEntity();
+  // return todo;
+  // }).toList();
+  // print("--------------------------------------------- $todos");
+  // return todos;
 
   @override
   Future<Todo> getTodo(int id) async {
@@ -176,6 +180,28 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
     } on Exception catch (e) {
       debugPrint("Something went wrong: $e");
     }
+  }
+
+  @override
+  Future<List<Todo>> getTodosByCategory(String categoryId) async {
+    final db = await openDB();
+
+    final items = await db.query(
+      'todos',
+      where: 'category_id = ?',
+      whereArgs: [categoryId],
+      orderBy: 'id DESC',
+    );
+
+    await db.close();
+    print("items: $items");
+    // Convert TodoModel to Todo entity and int id to String
+    final todos = items.map((item) {
+      final Todo todo = TodoModel.fromJson(item).toEntity();
+      return todo;
+    }).toList();
+    print("--------------------------------------------- $todos");
+    return todos;
   }
 }
 

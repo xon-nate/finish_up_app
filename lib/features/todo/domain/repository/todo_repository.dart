@@ -9,4 +9,5 @@ abstract class TodoRepository {
   Future<Either<Failure, Todo>> deleteTodoById(String id);
   Future<Either<Failure, bool>> updateTodoStatus(Todo updatedTodo);
   Future<Either<Failure, List<Todo>>> getTodos();
+  Future<Either<Failure, List<Todo>>> getTodosByCategory(String categoryId);
 }
