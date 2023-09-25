@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      //Colors.black as material Color for primary swatch
       theme: myLightTheme,
       routerConfig: appRouter,
     );

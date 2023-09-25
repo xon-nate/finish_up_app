@@ -50,6 +50,7 @@ class CategoryLocalRepositoryImpl implements CategoryRepository {
       final db = await localDataBase.openDB();
       //get categories
       final categories = await localDataBase.getCategories();
+
       //close database
       await db.close();
       //return categories

@@ -51,13 +51,7 @@ class HomeScaffold extends ConsumerWidget {
               context: context,
               isScrollControlled: true,
               builder: (_) {
-                if (ref.read(selectedTabProvider) == 1) {
-                  return const AddTodoBottomSheet();
-                  // } else if (ref.read(selectedTabProvider) == 2) {
-                  // return const AddCategoryScreen();
-                } else {
-                  return const Text('Error');
-                }
+                return const AddTodoBottomSheet();
               },
             );
           },

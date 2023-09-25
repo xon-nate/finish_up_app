@@ -59,6 +59,7 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
             onCategoryChanged: (category) {
               selectedCategory = category;
             },
+            selectedCategory: selectedCategory,
             taskNameController: taskNameController,
             descriptionController: descriptionController,
             dateTimeController: dateTimeController,

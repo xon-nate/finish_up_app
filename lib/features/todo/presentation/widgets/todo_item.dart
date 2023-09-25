@@ -42,10 +42,6 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
   @override
   Widget build(BuildContext context) {
     final isCompletedValue = ref.watch(isCompletedProvider);
-    // debugPrint('category id: ${widget.category.id}');
-    // debugPrint('category name: ${widget.category.name}');
-    // debugPrint('category icon: ${widget.category.icon}');
-    // debugPrint('category color: ${widget.category.categoryColor}');
 
     return Stack(
       clipBehavior: Clip.none,
@@ -78,13 +74,6 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               onTap: () {
-                //navigate to edit todo screen using this
-                // GoRoute(
-                // path: '/edit/:todoId',
-                // builder: (context, state) => EditTodoScreen(
-                // todoId: state.pathParameters['todoId']!,
-                // ),
-                // ),
                 context.push('/edit/${widget.todo.id}');
               },
               tileColor: Colors.transparent,

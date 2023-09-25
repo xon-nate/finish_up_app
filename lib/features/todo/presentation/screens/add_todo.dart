@@ -6,9 +6,6 @@ import '../../../category/presentation/providers/categories_provider.dart';
 import '../../domain/entities/todo.dart';
 import '../controllers/date_time_controller.dart';
 import '../providers/todo_controller.dart';
-import '../widgets/centered_button.dart';
-import '../widgets/labeled_input_widget.dart';
-import '../widgets/pick_date_time_widget.dart';
 import '../widgets/todo_form.dart';
 
 class AddTodoBottomSheet extends ConsumerStatefulWidget {
@@ -27,8 +24,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ref.watch(categoryListModel).categories;
-    selectedCategory = categories.first;
+    // selectedCategory = categories.first;x
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -52,8 +48,8 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                 taskNameController: taskNameController,
                 descriptionController: descriptionController,
                 dateTimeController: dateTimeController,
-                categories: categories,
-                // selectedCategory: selectedCategory,
+                categories: ref.watch(categoryListState).categories,
+                selectedCategory: selectedCategory,
                 onCategoryChanged: (category) {
                   selectedCategory = category;
                 },

@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:finish_up_app/features/todo/presentation/widgets/pick_date_time_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../category/domain/entities/category.dart';
+import '../../../category/presentation/providers/categories_provider.dart';
 import '../../domain/entities/todo.dart';
 import '../controllers/date_time_controller.dart';
 import 'centered_button.dart';
 import 'labeled_input_widget.dart';
 
-class TodoForm extends StatefulWidget {
+class TodoForm extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController taskNameController;
   final TextEditingController descriptionController;
@@ -17,10 +21,9 @@ class TodoForm extends StatefulWidget {
   final Function(DateTime?) onDateSaved;
   final Function() onSavePressed;
   final Todo? todo;
-  late final Category? selectedCategory;
-
-  TodoForm({
-    Key? key,
+  final Category? selectedCategory;
+  const TodoForm({
+    super.key,
     required this.formKey,
     required this.taskNameController,
     required this.descriptionController,
@@ -29,58 +32,19 @@ class TodoForm extends StatefulWidget {
     required this.onCategoryChanged,
     required this.onDateSaved,
     required this.onSavePressed,
+    required this.selectedCategory,
     this.todo,
-  }) : super(key: key) {
-    late final Category? initialCategory; // Use 'late final' local variable
-
-    // Initialize the controllers and selected category based on the 'Todo' object
-    if (todo != null) {
-      taskNameController.text = todo!.title;
-      descriptionController.text = todo!.description;
-      dateTimeController.value = todo!.dueDate;
-
-      // Set initialCategory to the category of the 'Todo' object
-      initialCategory = categories.firstWhere(
-        (category) => category.id == todo!.categoryId,
-        orElse: () =>
-            categories.firstWhere((category) => category.name == 'General'),
-      );
-    } else {
-      // If 'todo' is null, set initialCategory to 'General'
-      initialCategory =
-          categories.firstWhere((category) => category.name == 'General');
-    }
-
-    selectedCategory = initialCategory; // Assign to 'selectedCategory'
-  }
+  });
 
   @override
-  TodoFormState createState() => TodoFormState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TodoFormState();
 }
 
-class TodoFormState extends State<TodoForm> {
-  Category? selectedCategory;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize selectedCategory based on the 'Todo' object
-    if (widget.todo != null) {
-      selectedCategory = widget.categories.firstWhere(
-        (category) => category.id == widget.todo!.categoryId,
-        orElse: () => widget.categories
-            .firstWhere((category) => category.name == 'General'),
-      );
-      debugPrint('selectedCategory: $selectedCategory');
-    } else {
-      // If 'todo' is null, set selectedCategory to 'General'
-      selectedCategory = widget.categories
-          .firstWhere((category) => category.name == 'General');
-    }
-  }
-
+class _TodoFormState extends ConsumerState<TodoForm> {
   @override
   Widget build(BuildContext context) {
+    // final categories = ref.watch(categoryListState).categories;
+    // debugPrint('categories: $categories');
     return Form(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       key: widget.formKey,
@@ -101,23 +65,37 @@ class TodoFormState extends State<TodoForm> {
               },
             ),
           ),
-          LabeledInputWidget(
-            label: 'Category',
-            inputWidget: DropdownButtonFormField<Category>(
-              iconSize: 30,
-              isExpanded: true,
-              menuMaxHeight: MediaQuery.sizeOf(context).height / 3,
-              decoration: const InputDecoration(hintText: 'Select a category'),
-              items: widget.categories.map((category) {
-                return DropdownMenuItem<Category>(
-                  value: category,
-                  child: Text(category.name),
-                );
-              }).toList(),
-              value: widget.selectedCategory,
-              onChanged: widget.onCategoryChanged,
-            ),
-          ),
+          FutureBuilder<Object>(
+              future: ref.read(categoryListModel).getCategories(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text('error');
+                } else {
+                  final categories = snapshot.data as List<Category>;
+                  debugPrint(categories.toString());
+                  return LabeledInputWidget(
+                    label: 'Category',
+                    inputWidget: DropdownButtonFormField<Category>(
+                      iconSize: 30,
+                      isExpanded: true,
+                      menuMaxHeight: MediaQuery.sizeOf(context).height / 3,
+                      decoration:
+                          const InputDecoration(hintText: 'Select a category'),
+                      items: categories.map((category) {
+                        print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
+                        return DropdownMenuItem<Category>(
+                          value: category,
+                          child: Text(category.name),
+                        );
+                      }).toList(),
+                      value: widget.selectedCategory,
+                      onChanged: widget.onCategoryChanged,
+                    ),
+                  );
+                }
+              }),
           DateTimeFormField(
             onSaved: (dateTime) {
               widget.onDateSaved(dateTime);
