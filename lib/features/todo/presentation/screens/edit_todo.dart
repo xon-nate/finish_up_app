@@ -33,9 +33,8 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ref.watch(categoryListModel).categories;
-    selectedCategory = categories.first;
     final todo = getTodo(widget.todoId);
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
@@ -50,46 +49,55 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
         scrolledUnderElevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: TodoForm(
-            todo: todo,
-            formKey: formKey,
-            categories: categories,
-            onCategoryChanged: (category) {
-              selectedCategory = category;
-            },
-            selectedCategory: selectedCategory,
-            taskNameController: taskNameController,
-            descriptionController: descriptionController,
-            dateTimeController: dateTimeController,
-            onDateSaved: (dateTime) {
-              dateTimeController.value = dateTime;
-              debugPrint('onDateSaved: ${dateTimeController.value}');
-            },
-            onSavePressed: () {
-              if (formKey.currentState != null &&
-                  formKey.currentState!.validate()) {
-                final Todo newTodo = Todo(
-                  id: todo.id,
-                  isDone: todo.isDone,
-                  dueDate: dateTimeController.value,
-                  description: descriptionController.text,
-                  title: taskNameController.text,
-                  categoryId: selectedCategory!.id,
-                );
-                ref.read(todosListState.notifier).updateTodo(newTodo);
-                debugPrint('New isDone: ${newTodo.isDone}');
-                debugPrint('New dueDate: ${newTodo.dueDate}');
-                debugPrint('New description: ${newTodo.description}');
-                debugPrint('New title: ${newTodo.title}');
-                debugPrint('New categoryId: ${newTodo.categoryId}');
-                Navigator.pop(context);
-              }
-            },
-          ),
-        ),
-      ),
+          padding: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+              child: FutureBuilder<List<Category>>(
+                  future: ref.read(categoryListModel).getCategories(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final categories = snapshot.data!;
+                      selectedCategory = categories.first;
+                      return TodoForm(
+                        todo: todo,
+                        categories: categories,
+                        selectedCategory: selectedCategory,
+                        formKey: formKey,
+                        taskNameController: taskNameController,
+                        descriptionController: descriptionController,
+                        dateTimeController: dateTimeController,
+                        onCategoryChanged: (category) {
+                          selectedCategory = category;
+                        },
+                        onDateSaved: (dateTime) {
+                          dateTimeController.value = dateTime;
+                        },
+                        onSavePressed: () {
+                          if (formKey.currentState != null &&
+                              formKey.currentState!.validate()) {
+                            final Todo newTodo = Todo(
+                              id: DateTime.now().toString(),
+                              isDone: false,
+                              dueDate: dateTimeController.value,
+                              description: descriptionController.text,
+                              title: taskNameController.text,
+                              categoryId: selectedCategory!.id,
+                            );
+                            debugPrint('New isDone: ${newTodo.isDone}');
+                            debugPrint('New dueDate: ${newTodo.dueDate}');
+                            debugPrint(
+                                'New description: ${newTodo.description}');
+                            debugPrint('New title: ${newTodo.title}');
+                            debugPrint('New categoryId: ${newTodo.categoryId}');
+
+                            ref.read(todosListState.notifier).addTodo(newTodo);
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }))),
     );
   }
 }

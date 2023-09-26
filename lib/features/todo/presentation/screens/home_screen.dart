@@ -7,7 +7,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../../category/domain/entities/category.dart';
 import '../providers/todo_controller.dart';
 import '../widgets/todo_item.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/todo_item_shimmer.dart';
 import 'add_todo.dart';

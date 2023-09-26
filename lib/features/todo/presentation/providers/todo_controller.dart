@@ -49,7 +49,7 @@ class TodosStateNotifier extends StateNotifier<Todos> {
     await getTodos().then((value) {
       state = Todos(todos: value);
     });
-    debugPrint(state.todos.toString());
+    debugPrint('HELLO IM HERE${state.todos.toString()}');
   }
 
   Future<void> updateTodo(Todo todo) async {

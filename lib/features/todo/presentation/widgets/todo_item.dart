@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../category/domain/entities/category.dart';
-import '../../../category/presentation/providers/categories_provider.dart';
 import '../../domain/entities/todo.dart';
 import './todo_category.dart';
 import '../state/item_state.dart';

@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/errors.dart';
 import '../../../../core/utils/usecase.dart';
-import '../../../category/domain/entities/category.dart';
 import '../entities/todo.dart';
 import '../repository/todo_repository.dart';
 

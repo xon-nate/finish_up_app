@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:finish_up_app/features/todo/presentation/widgets/pick_date_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../category/domain/entities/category.dart';
-import '../../../category/presentation/providers/categories_provider.dart';
 import '../../domain/entities/todo.dart';
 import '../controllers/date_time_controller.dart';
 import 'centered_button.dart';
@@ -16,19 +13,19 @@ class TodoForm extends ConsumerStatefulWidget {
   final TextEditingController taskNameController;
   final TextEditingController descriptionController;
   final DateTimeController dateTimeController;
-  final List<Category> categories;
   final Function(Category?) onCategoryChanged;
   final Function(DateTime?) onDateSaved;
   final Function() onSavePressed;
   final Todo? todo;
+  final List<Category> categories;
   final Category? selectedCategory;
   const TodoForm({
     super.key,
+    required this.categories,
     required this.formKey,
     required this.taskNameController,
     required this.descriptionController,
     required this.dateTimeController,
-    required this.categories,
     required this.onCategoryChanged,
     required this.onDateSaved,
     required this.onSavePressed,
@@ -41,10 +38,28 @@ class TodoForm extends ConsumerStatefulWidget {
 }
 
 class _TodoFormState extends ConsumerState<TodoForm> {
+  Category? selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.todo == null) {
+      selectedCategory = widget.selectedCategory;
+    } else {
+      selectedCategory = widget.categories.firstWhere(
+        (category) => category.id == widget.todo!.categoryId,
+        orElse: () => widget.selectedCategory!,
+      );
+    }
+
+    widget.taskNameController.text = widget.todo?.title ?? '';
+    widget.descriptionController.text = widget.todo?.description ?? '';
+    widget.dateTimeController.value = widget.todo?.dueDate;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // final categories = ref.watch(categoryListState).categories;
-    // debugPrint('categories: $categories');
     return Form(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       key: widget.formKey,
@@ -65,37 +80,27 @@ class _TodoFormState extends ConsumerState<TodoForm> {
               },
             ),
           ),
-          FutureBuilder<Object>(
-              future: ref.read(categoryListModel).getCategories(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return const Text('error');
-                } else {
-                  final categories = snapshot.data as List<Category>;
-                  debugPrint(categories.toString());
-                  return LabeledInputWidget(
-                    label: 'Category',
-                    inputWidget: DropdownButtonFormField<Category>(
-                      iconSize: 30,
-                      isExpanded: true,
-                      menuMaxHeight: MediaQuery.sizeOf(context).height / 3,
-                      decoration:
-                          const InputDecoration(hintText: 'Select a category'),
-                      items: categories.map((category) {
-                        print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
-                        return DropdownMenuItem<Category>(
-                          value: category,
-                          child: Text(category.name),
-                        );
-                      }).toList(),
-                      value: widget.selectedCategory,
-                      onChanged: widget.onCategoryChanged,
-                    ),
-                  );
+          LabeledInputWidget(
+            label: 'Category',
+            inputWidget: DropdownButtonFormField<Category>(
+              value: selectedCategory,
+              onChanged: (category) {
+                widget.onCategoryChanged(category);
+              },
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select a category';
                 }
-              }),
+                return null;
+              },
+              items: widget.categories.map((category) {
+                return DropdownMenuItem<Category>(
+                  value: category,
+                  child: Text(category.name),
+                );
+              }).toList(),
+            ),
+          ),
           DateTimeFormField(
             onSaved: (dateTime) {
               widget.onDateSaved(dateTime);

@@ -21,12 +21,13 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
   CategoryStateNotifier({required this.ref})
       : super(Categories(categories: [])) {
     loadCategories();
-    print("CategoryStateNotifier: $state");
   }
 
   void loadCategories() async {
     var categories = await getCategories();
     state = Categories(categories: categories);
+    print(
+        "---------------------------------------------------------CategoryStateNotifier: $categories $state");
   }
 
   Future<List<Category>> getCategories() async {
@@ -61,6 +62,10 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
         (r) => r);
   }
 }
+// Category getCategoryFromState(String id) {
+//   final category =  categories.firstWhere((category) => category.id == id);
+//   return category;
+// }
 
 final categoryListState =
     StateNotifierProvider<CategoryStateNotifier, Categories>((ref) {
