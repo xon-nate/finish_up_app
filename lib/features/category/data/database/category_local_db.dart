@@ -148,6 +148,8 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
           colorIndex: maps[i]['colorIndex'],
         );
       });
+    } catch (e) {
+      throw Exception("Error getting categories: $e");
     } finally {
       await db.close();
     }
@@ -168,6 +170,8 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
         iconIndex: maps[0]['iconIndex'],
         colorIndex: maps[0]['colorIndex'],
       );
+    } catch (e) {
+      throw Exception("Error getting category: $e");
     } finally {
       await db.close();
     }

@@ -62,10 +62,6 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
         (r) => r);
   }
 }
-// Category getCategoryFromState(String id) {
-//   final category =  categories.firstWhere((category) => category.id == id);
-//   return category;
-// }
 
 final categoryListState =
     StateNotifierProvider<CategoryStateNotifier, Categories>((ref) {
@@ -74,4 +70,8 @@ final categoryListState =
 
 final categoryListModel = Provider<CategoryStateNotifier>((ref) {
   return ref.watch(categoryListState.notifier);
+});
+
+final categoryFutureListProvider = FutureProvider<List<Category>>((ref) async {
+  return await ref.watch(categoryListState.notifier).getCategories();
 });
