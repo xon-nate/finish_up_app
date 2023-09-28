@@ -47,11 +47,12 @@ class TodoLocalRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<Either<Failure, Todo>> deleteTodoById(String id) async {
+  Future<Either<Failure, bool>> deleteTodoById(String id) async {
     return _execute(() async {
-      final todo = await todoLocalDataBase.getTodo(int.parse(id));
-      await todoLocalDataBase.deleteTodo(int.parse(id));
-      return todo;
+      final result = await todoLocalDataBase.deleteTodo(
+        int.parse(id),
+      );
+      return result;
     });
   }
 

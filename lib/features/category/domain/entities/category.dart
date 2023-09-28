@@ -13,7 +13,7 @@ class CategoryColors {
       darkColor: const Color(0xFFA31D00),
     ),
     ColorPair(
-      color: const Color(0xFF80FFD9),
+      color: const Color(0xFF50C9A5),
       darkColor: const Color(0xFF00A372),
     ),
     ColorPair(
@@ -25,7 +25,7 @@ class CategoryColors {
       darkColor: const Color(0xFFA30089),
     ),
     ColorPair(
-      color: const Color(0xFF80FFA3),
+      color: const Color(0xFF5DCC7C),
       darkColor: const Color(0xFF00A3A3),
     ),
     ColorPair(
@@ -33,7 +33,7 @@ class CategoryColors {
       darkColor: const Color(0xFF0069A3),
     ),
     ColorPair(
-      color: const Color(0xFFFFD180),
+      color: const Color(0xFFEEBE6B),
       darkColor: const Color(0xFFA37500),
     ),
     ColorPair(
@@ -45,7 +45,7 @@ class CategoryColors {
       darkColor: const Color(0xFF6900A3),
     ),
     ColorPair(
-      color: const Color(0xFFD1FF80),
+      color: const Color(0xFF9DD63C),
       darkColor: const Color(0xFF69A300),
     ),
   ];

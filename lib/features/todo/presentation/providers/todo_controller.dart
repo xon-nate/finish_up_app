@@ -69,6 +69,14 @@ class TodosStateNotifier extends StateNotifier<Todos> {
     final todos = await ref.read(getAllTodosUseCaseProvider).call(NoParams());
     return todos.fold((l) => [], (r) => r);
   }
+
+  Future<bool> deleteTodo(id) async {
+    final result = await ref.read(deleteTodoUseCaseProvider).call(Params(id));
+    await getTodos().then((value) {
+      state = Todos(todos: value);
+    });
+    return result.fold((l) => false, (r) => true);
+  }
 }
 
 final todosListState = StateNotifierProvider<TodosStateNotifier, Todos>((ref) {

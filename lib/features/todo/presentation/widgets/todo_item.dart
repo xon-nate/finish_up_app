@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../category/domain/entities/category.dart';
 import '../../domain/entities/todo.dart';
@@ -32,15 +33,29 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
     isCompletedProvider = StateNotifierProvider<ItemState, bool>(
       (ref) => ItemState(widget.isCompleted),
     );
-    //print all params
-    // debugPrint('isCompleted: ${widget.isCompleted}');
-    // debugPrint('todo: ${widget.todo}');
-    // debugPrint('category: ${widget.category}');
+  }
+
+  String _calculateRelativeTime(DateTime dueDate) {
+    final now = DateTime.now();
+    final difference = dueDate.difference(now);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m';
+    } else {
+      return 'Today';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final isCompletedValue = ref.watch(isCompletedProvider);
+    final formattedDueDate =
+        DateFormat.yMd().add_Hm().format(widget.todo.dueDate!);
+    final relativeTime = _calculateRelativeTime(widget.todo.dueDate!);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -179,7 +194,9 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
                 fontWeight: FontWeight.w600,
               ),
               subtitle: AnimatedTextDecoration(
-                text: widget.todo.description,
+                //show relative date and time
+                text: '${widget.todo.description}\n'
+                    '$formattedDueDate (${isCompletedValue ? 'Completed' : relativeTime})',
                 isCompleted: isCompletedValue,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,

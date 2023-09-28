@@ -60,6 +60,7 @@ class _TodoFormState extends ConsumerState<TodoForm> {
 
   @override
   Widget build(BuildContext context) {
+    // widget.selectedCategory = selectedCategory;
     return Form(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       key: widget.formKey,

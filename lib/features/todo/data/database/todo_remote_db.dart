@@ -5,7 +5,7 @@ import '../models/todo_model.dart';
 abstract class TodoRemoteDataBase {
   Future<List<TodoModel>> getTodosRemote();
   Future<TodoModel> addTodoRemote(TodoModel newTodo);
-  Future<void> deleteTodoByIdRemote(String id);
+  Future<bool> deleteTodoByIdRemote(String id);
   Future<void> updateTodoRemote(TodoModel todo);
   Future<void> updateTodoStatusRemote(TodoModel todo);
   Future<TodoModel> getTodoByIdRemote(String id);
@@ -26,8 +26,9 @@ class TodoRemoteDataBaseImpl implements TodoRemoteDataBase {
   }
 
   @override
-  Future<void> deleteTodoByIdRemote(String id) async {
+  Future<bool> deleteTodoByIdRemote(String id) async {
     await todosCollection.doc(id).delete();
+    return Future.value(true);
   }
 
   @override

@@ -98,13 +98,6 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
       await db.close();
     }
   }
-  // Convert TodoModel to Todo entity and int id to String
-  // final todos = items.map((item) {
-  // final Todo todo = TodoModel.fromJson(item).toEntity();
-  // return todo;
-  // }).toList();
-  // print("--------------------------------------------- $todos");
-  // return todos;
 
   @override
   Future<Todo> getTodo(int id) async {
@@ -126,7 +119,6 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
   @override
   Future<int> updateTodo(TodoModel todo) async {
     final db = await openDB();
-
     final data = {
       'title': todo.title,
       'description': todo.description,
@@ -167,18 +159,22 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
   }
 
   @override
-  Future<void> deleteTodo(int id) async {
+  Future<bool> deleteTodo(int id) async {
     final db = await openDB();
 
     try {
-      await db.delete(
+      final result = await db.delete(
         'todos',
         where: 'id = ?',
         whereArgs: [id],
       );
-      await db.close();
+
+      return result == 1;
     } on Exception catch (e) {
-      debugPrint("Something went wrong: $e");
+      print("Error deleting todo: $e");
+      return false;
+    } finally {
+      await db.close();
     }
   }
 

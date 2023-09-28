@@ -3,6 +3,7 @@ import 'package:finish_up_app/features/todo/presentation/providers/todo_controll
 import 'package:flutter/material.dart';
 import 'package:finish_up_app/features/todo/presentation/widgets/todo_form.dart'; // Import the TodoForm widget
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../category/presentation/providers/categories_provider.dart';
 import '../../domain/entities/todo.dart';
 import '../controllers/date_time_controller.dart';
@@ -20,7 +21,6 @@ class EditTodoScreen extends ConsumerWidget {
     Category? selectedCategory;
     final todo =
         ref.watch(todosListState).todos.firstWhere((todo) => todo.id == todoId);
-
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
@@ -33,11 +33,44 @@ class EditTodoScreen extends ConsumerWidget {
         ),
         backgroundColor: const Color(0xFFECECEC),
         scrolledUnderElevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Delete Todo'),
+                    content: const Text('Are you sure you want to delete?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          ref.read(todosListState.notifier).deleteTodo(todoId);
+                          context.go('/');
+                        },
+                        child: const Text('Yes'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('No'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: ref.watch(categoryFutureListProvider).when(
+                loading: () => const CircularProgressIndicator(),
+                error: (error, stackTrace) => Text(error.toString()),
                 data: (categories) {
                   return TodoForm(
                     todo: todo,
@@ -47,32 +80,25 @@ class EditTodoScreen extends ConsumerWidget {
                     taskNameController: taskNameController,
                     descriptionController: descriptionController,
                     dateTimeController: dateTimeController,
-                    onCategoryChanged: (category) {
-                      selectedCategory = category;
-                    },
-                    onDateSaved: (date) {
-                      dateTimeController.value = date;
-                    },
+                    onCategoryChanged: (category) =>
+                        selectedCategory = category,
+                    onDateSaved: (date) => dateTimeController.value = date,
                     onSavePressed: () {
                       if (formKey.currentState!.validate()) {
-                        final todo = Todo(
+                        final newTodo = Todo(
                           id: todoId,
                           title: taskNameController.text,
                           description: descriptionController.text,
                           dueDate: dateTimeController.value,
-                          categoryId: selectedCategory!.id,
+                          categoryId: selectedCategory?.id ?? todo.categoryId,
                           isDone: false,
                         );
-                        ref.read(todosListState.notifier).updateTodo(
-                              todo,
-                            );
+                        ref.read(todosListState.notifier).updateTodo(newTodo);
                         Navigator.pop(context);
                       }
                     },
                   );
                 },
-                loading: () => const CircularProgressIndicator(),
-                error: (error, stackTrace) => Text(error.toString()),
               ),
         ),
       ),

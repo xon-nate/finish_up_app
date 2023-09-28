@@ -41,11 +41,10 @@ class TodoRemoteRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<Either<Failure, Todo>> deleteTodoById(String id) async {
+  Future<Either<Failure, bool>> deleteTodoById(String id) async {
     return _execute(() async {
-      final todoModel = await todoRemoteDataBase.getTodoByIdRemote(id);
-      await todoRemoteDataBase.deleteTodoByIdRemote(id);
-      return todoModel;
+      final result = await todoRemoteDataBase.deleteTodoByIdRemote(id);
+      return result;
     });
   }
 
