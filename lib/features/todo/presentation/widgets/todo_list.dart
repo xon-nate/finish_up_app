@@ -28,8 +28,6 @@ class TodoList extends StatelessWidget {
           itemCount: todos.length,
           itemBuilder: (_, index) {
             final todo = todos[index];
-            // final categoryFuture =
-            // ref.watch(categoryListModel).getCategoryById(todo.categoryId);
             return ref.watch(futureCategoryProvider(todo.categoryId)).when(
                   loading: () => const TodoItemShimmer(),
                   error: (error, stackTrace) {
@@ -43,7 +41,6 @@ class TodoList extends StatelessWidget {
                       ),
                       child: TodoItemWidget(
                         key: ValueKey(todo.id),
-                        isCompleted: todo.isDone,
                         todo: todo,
                         category: category,
                       ),

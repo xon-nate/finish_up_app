@@ -5,6 +5,7 @@ import 'package:finish_up_app/features/todo/presentation/widgets/todo_form.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../category/presentation/providers/categories_provider.dart';
+import '../../../category/presentation/screens/category_screen.dart';
 import '../../domain/entities/todo.dart';
 import '../controllers/date_time_controller.dart';
 
@@ -94,6 +95,9 @@ class EditTodoScreen extends ConsumerWidget {
                           isDone: false,
                         );
                         ref.read(todosListState.notifier).updateTodo(newTodo);
+                        ref.refresh(todosFutureProvider(
+                            selectedCategory?.id ?? todo.categoryId));
+
                         Navigator.pop(context);
                       }
                     },

@@ -12,7 +12,9 @@ class UpdateTodoUseCase extends UseCase<Todo, Params<Todo>> {
 
   @override
   // params is the todo to be updated
+
   Future<Either<Failure, Todo>> call(Params params) async {
+    print("UpdateTodoUseCase called with params: ${params.data}");
     return await repository.updateTodo(params.data);
   }
 }

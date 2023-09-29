@@ -35,13 +35,10 @@ class TodoLocalRepositoryImpl implements TodoRepository {
 
   @override
   Future<Either<Failure, Todo>> addTodo(Todo newTodo) async {
-    print("Local Repository addTodo : ${newTodo.toString()}");
-
     return _execute(() async {
       await todoLocalDataBase.addTodo(
         _mapTodoToModel(newTodo),
       );
-      print("TODOOOOOOO added successfully");
       return newTodo;
     });
   }

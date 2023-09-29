@@ -1,8 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../todo/presentation/providers/todo_controller.dart';
 import '../../domain/entities/category.dart';
+
+// final categoryTaskCountProvider = StateProvider.autoDispose.family<int, String>(
+//   (ref, categoryId) {
+//     final todoList = ref.watch(todosListState).todos;
+//     final categoryTodoList =
+//         todoList.where((todo) => todo.categoryId == categoryId).toList();
+//     return categoryTodoList.length;
+//   },
+// );
+final categoryCompletedTaskCountProvider =
+    StateProvider.autoDispose.family<int, String>(
+  (ref, categoryId) {
+    final todoList = ref.watch(todosListState).todos;
+    final categoryTodoList =
+        todoList.where((todo) => todo.categoryId == categoryId).toList();
+    final completedTodoList =
+        categoryTodoList.where((todo) => todo.isDone == true).toList();
+    return completedTodoList.length;
+  },
+);
+
+final categoryPendingTaskCountProvider =
+    StateProvider.autoDispose.family<int, String>(
+  (ref, categoryId) {
+    final todoList = ref.watch(todosListState).todos;
+    final categoryTodoList =
+        todoList.where((todo) => todo.categoryId == categoryId).toList();
+    final pendingTodoList =
+        categoryTodoList.where((todo) => todo.isDone == false).toList();
+    return pendingTodoList.length;
+  },
+);
 
 class CategoryItemWidget extends StatelessWidget {
   const CategoryItemWidget({
@@ -82,27 +116,65 @@ class CategoryItemWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '4 Pending Tasks',
-                              style: TextStyle(
-                                color: category.categoryColor.darkColor
-                                    .withOpacity(0.8),
-                                fontSize: 14,
+                        Consumer(
+                          builder: (_, WidgetRef ref, __) {
+                            final int completedTaskCount = ref.watch(
+                              categoryCompletedTaskCountProvider(
+                                category.id,
                               ),
-                            ),
-                            Text(
-                              '2 Completed Tasks',
-                              style: TextStyle(
-                                color: category.categoryColor.darkColor
-                                    .withOpacity(0.8),
-                                fontSize: 14,
+                            );
+                            final int pendingTaskCount = ref.watch(
+                              categoryPendingTaskCountProvider(
+                                category.id,
                               ),
-                            ),
-                          ],
+                            );
+                            return FittedBox(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Text(
+                                        '$completedTaskCount Done',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              category.categoryColor.darkColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.check_circle_outline,
+                                        color: category.categoryColor.darkColor,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Text(
+                                        '$pendingTaskCount Pending',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              category.categoryColor.darkColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.info_outline,
+                                        color: category.categoryColor.darkColor,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ],
                     )),

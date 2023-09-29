@@ -91,8 +91,7 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
     try {
       final items = await db.query('todos', orderBy: 'id DESC');
 
-      print("items: $items");
-      //return todos;
+      // print("items: $items");
       return items.map((item) => TodoModel.fromJson(item).toEntity()).toList();
     } finally {
       await db.close();
@@ -171,8 +170,7 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
 
       return result == 1;
     } on Exception catch (e) {
-      print("Error deleting todo: $e");
-      return false;
+      throw Exception("Error deleting todo: $e");
     } finally {
       await db.close();
     }
@@ -190,13 +188,12 @@ class TodoLocalDataBaseImpl implements TodoLocalDataBase {
     );
 
     await db.close();
-    print("items: $items");
+    // print("items: $items");
     // Convert TodoModel to Todo entity and int id to String
     final todos = items.map((item) {
       final Todo todo = TodoModel.fromJson(item).toEntity();
       return todo;
     }).toList();
-    print("--------------------------------------------- $todos");
     return todos;
   }
 }

@@ -19,4 +19,23 @@ class Todo {
   String toString() {
     return 'Todo(id: $id, categoryId: $categoryId, title: $title, description: $description, dueDate: $dueDate, isDone: $isDone)';
   }
+
+  //create copywith
+  Todo copyWith({
+    String? id,
+    String? categoryId,
+    String? title,
+    String? description,
+    DateTime? dueDate,
+    bool? isDone,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      categoryId: categoryId ?? this.categoryId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      dueDate: dueDate ?? this.dueDate,
+      isDone: isDone ?? this.isDone,
+    );
+  }
 }

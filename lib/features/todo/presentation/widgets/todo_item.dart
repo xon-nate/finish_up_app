@@ -1,3 +1,4 @@
+import 'package:finish_up_app/features/todo/presentation/providers/todo_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,11 +11,11 @@ import '../state/item_state.dart';
 import 'animated_text_deco.dart';
 
 class TodoItemWidget extends ConsumerStatefulWidget {
-  final bool isCompleted;
+  // final bool isCompleted;
   final Todo todo;
   final Category category;
   const TodoItemWidget({
-    required this.isCompleted,
+    // required this.isCompleted,
     required this.todo,
     required this.category,
     super.key,
@@ -25,13 +26,14 @@ class TodoItemWidget extends ConsumerStatefulWidget {
 }
 
 class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
-  late final StateNotifierProvider<ItemState, bool> isCompletedProvider;
+  late final AutoDisposeStateNotifierProvider<ItemState, bool>
+      isCompletedProvider;
 
   @override
   void initState() {
     super.initState();
-    isCompletedProvider = StateNotifierProvider<ItemState, bool>(
-      (ref) => ItemState(widget.isCompleted),
+    isCompletedProvider = StateNotifierProvider.autoDispose<ItemState, bool>(
+      (ref) => ItemState(widget.todo.isDone),
     );
   }
 
@@ -107,7 +109,6 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
                                 ? 'Mark as not completed?'
                                 : 'Mark as completed?',
                           ),
-                          // surfaceTintColor: const Color(0xFF006ed4),
                           icon: const Icon(
                             Icons.info,
                             size: 30,
@@ -123,7 +124,6 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
                             textAlign: TextAlign.center,
                           ),
                           actionsAlignment: MainAxisAlignment.spaceBetween,
-
                           actions: [
                             Row(
                               children: [
@@ -145,6 +145,11 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () {
+                                      ref.read(todosListModel).updateTodoStatus(
+                                            widget.todo.copyWith(
+                                              isDone: !isCompletedValue,
+                                            ),
+                                          );
                                       ref
                                           .read(isCompletedProvider.notifier)
                                           .toggle();

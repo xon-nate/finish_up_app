@@ -1,14 +1,8 @@
-import 'package:finish_up_app/features/category/presentation/providers/categories_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../category/domain/entities/category.dart';
-import '../../../category/presentation/widgets/category_item.dart';
+import '../../../category/presentation/screens/add_screen.dart';
 import '../../../category/presentation/widgets/category_list.dart';
-import '../providers/todo_controller.dart';
-import '../widgets/todo_item.dart';
-
-import '../widgets/todo_item_shimmer.dart';
 import '../widgets/todo_list.dart';
 import 'add_todo.dart';
 
@@ -44,16 +38,23 @@ class HomeScaffold extends ConsumerWidget {
     });
     return Scaffold(
       floatingActionButton: Visibility(
-        visible: ref.watch(selectedTabProvider) == 1,
+        visible: ref.watch(selectedTabProvider) != 0,
         child: FloatingActionButton(
           onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (_) {
-                return const AddTodoBottomSheet();
-              },
-            );
+            if (ref.watch(selectedTabProvider) == 1) {
+              showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) {
+                    return const AddTodoBottomSheet();
+                  });
+            } else {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AddCategoryScreen(),
+                ),
+              );
+            }
           },
           child: const Icon(
             Icons.add,
@@ -120,9 +121,7 @@ class HomeScaffold extends ConsumerWidget {
       ),
       body: const TabBarView(
         children: [
-          Center(
-            child: Text('Home'),
-          ),
+          Center(child: Text('Home')),
           TodoList(),
           CategoriesList(),
         ],
