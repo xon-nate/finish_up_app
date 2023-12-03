@@ -6,11 +6,9 @@ import '../../domain/usecases/module.dart';
 
 class Categories {
   final List<Category> categories;
-
   Categories({
     required this.categories,
   });
-
   @override
   String toString() => 'Categories(categories: $categories)';
 }
@@ -33,7 +31,6 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
   Future<List<Category>> getCategories() async {
     final categories =
         await ref.read(getAllCategoriesUseCaseProvider).call(NoParams());
-
     return await categories.fold(
       (l) => [],
       (r) => r,
@@ -42,11 +39,22 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
 
   List<Category> get categories => state.categories;
 
-  void addCategory() {}
+  void addCategory(Category newCategory) async {
+    final addedCategory =
+        await ref.read(addCategoryUseCaseProvider).call(Params(newCategory));
+    debugPrint('BIM BIM BAM BAM $addedCategory');
+    await getCategories()
+        .then((value) => {state = Categories(categories: value)});
+    debugPrint(state.categories.toString());
+  }
 
   void updateCategory() {}
 
-  void deleteCategory() {}
+  void deleteCategory(String id) async {
+    await ref.read(deleteCategoryUseCaseProvider).call(Params(id));
+    await getCategories()
+        .then((value) => {state = Categories(categories: value)});
+  }
 
   Future<Category> getCategoryById(String id) async {
     final category =
@@ -64,13 +72,17 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
 }
 
 final categoryListState =
-    StateNotifierProvider<CategoryStateNotifier, Categories>((ref) {
-  return CategoryStateNotifier(ref: ref.container);
-});
+    StateNotifierProvider<CategoryStateNotifier, Categories>(
+  (ref) {
+    return CategoryStateNotifier(ref: ref.container);
+  },
+);
 
-final categoryListModel = Provider<CategoryStateNotifier>((ref) {
-  return ref.watch(categoryListState.notifier);
-});
+final categoryListModel = Provider<CategoryStateNotifier>(
+  (ref) {
+    return ref.watch(categoryListState.notifier);
+  },
+);
 
 final categoryFutureListProvider = FutureProvider<List<Category>>((ref) async {
   return await ref.watch(categoryListState.notifier).getCategories();

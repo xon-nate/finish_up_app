@@ -24,7 +24,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
   final taskNameController = TextEditingController();
   final descriptionController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Category? selectedCategory;
+  // late Category selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +51,14 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final categories = snapshot.data!;
-                      selectedCategory = categories.first;
+                      var selectedCategory = categories.first;
                       return TodoForm(
                         taskNameController: taskNameController,
                         descriptionController: descriptionController,
                         dateTimeController: dateTimeController,
                         onCategoryChanged: (category) {
-                          selectedCategory = category;
+                          selectedCategory = category!;
+                          debugPrint(selectedCategory.name);
                         },
                         onDateSaved: (dateTime) {
                           dateTimeController.value = dateTime;
@@ -73,7 +74,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                               dueDate: dateTimeController.value,
                               description: descriptionController.text,
                               title: taskNameController.text,
-                              categoryId: selectedCategory!.id,
+                              categoryId: selectedCategory.id,
                             );
                             debugPrint('New isDone: ${newTodo.isDone}');
                             debugPrint('New dueDate: ${newTodo.dueDate}');

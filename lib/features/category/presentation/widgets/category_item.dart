@@ -1,3 +1,4 @@
+import 'package:finish_up_app/features/category/presentation/providers/categories_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -136,38 +137,38 @@ class CategoryItemWidget extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
+                                      // Icon(
+                                      //   Icons.check_circle_outline,
+                                      //   color: category.categoryColor.darkColor,
+                                      //   size: 20,
+                                      // ),
                                       Text(
-                                        '$completedTaskCount Done',
+                                        '$completedTaskCount Completed',
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           color:
                                               category.categoryColor.darkColor,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.check_circle_outline,
-                                        color: category.categoryColor.darkColor,
-                                        size: 20,
                                       ),
                                     ],
                                   ),
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
+                                      // Icon(
+                                      //   Icons.info_outline,
+                                      //   color: category.categoryColor.darkColor,
+                                      //   size: 20,
+                                      // ),
                                       Text(
                                         '$pendingTaskCount Pending',
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           color:
                                               category.categoryColor.darkColor,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.info_outline,
-                                        color: category.categoryColor.darkColor,
-                                        size: 20,
                                       ),
                                     ],
                                   ),

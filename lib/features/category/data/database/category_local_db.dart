@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart' as sql;
+import 'package:uuid/uuid.dart'; // Import the UUID package
 
 // import '../../../../core/errors/errors.dart';
 import '../../domain/entities/category.dart';
@@ -38,8 +39,8 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
   Future<void> createTables(sql.Database database) async {
     //create if not exists
     await database.execute('''
-    CREATE TABLE IF NOT EXISTS categories (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+    1CREATE TABLE IF NOT EXISTS categories (
+      id TEXT PRIMARY KEY,
       name TEXT,
       iconIndex INTEGER,
       colorIndex INTEGER
@@ -165,10 +166,10 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
         whereArgs: [id],
       );
       return CategoryModel(
-        id: maps[0]['id'].toString(),
-        name: maps[0]['name'],
-        iconIndex: maps[0]['iconIndex'],
-        colorIndex: maps[0]['colorIndex'],
+        id: maps.first['id'].toString(),
+        name: maps.first['name'],
+        iconIndex: maps.first['iconIndex'],
+        colorIndex: maps.first['colorIndex'],
       );
     } catch (e) {
       throw Exception("Error getting category: $e");

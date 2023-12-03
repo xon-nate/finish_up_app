@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/category_local_repo_impl.dart';
 import 'add.dart';
 // import 'delete.dart';
+import 'delete.dart';
 import 'get_all.dart';
 import 'get.dart';
 // import 'update.dart';
@@ -27,6 +28,13 @@ final getAllCategoriesUseCaseProvider =
 
 final getCategoryByIdUseCaseProvider = Provider.autoDispose<GetCategoryUseCase>(
   (ref) => GetCategoryUseCase(
+    ref.read(categoryLocalRepositoryProvider),
+  ),
+);
+
+final deleteCategoryUseCaseProvider =
+    Provider.autoDispose<DeleteCategoryUseCase>(
+  (ref) => DeleteCategoryUseCase(
     ref.read(categoryLocalRepositoryProvider),
   ),
 );

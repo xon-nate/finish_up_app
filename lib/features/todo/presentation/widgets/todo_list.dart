@@ -28,10 +28,11 @@ class TodoList extends StatelessWidget {
           itemCount: todos.length,
           itemBuilder: (_, index) {
             final todo = todos[index];
+            //todo make it returrn list of categories not just 1 blyat
             return ref.watch(futureCategoryProvider(todo.categoryId)).when(
                   loading: () => const TodoItemShimmer(),
                   error: (error, stackTrace) {
-                    return Text('Error: $error');
+                    return Text('Error: $error $stackTrace');
                   },
                   data: (category) {
                     return Padding(
