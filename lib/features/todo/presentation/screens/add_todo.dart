@@ -24,12 +24,9 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
   final taskNameController = TextEditingController();
   final descriptionController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  // late Category selectedCategory;
 
   @override
   Widget build(BuildContext context) {
-    // selectedCategory = categories.first;x
-
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -39,65 +36,66 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Add Todo',
-                    style: Theme.of(context).textTheme.displayLarge),
+                child: Text(
+                  'Add Todo',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
               ),
               const Divider(
                 color: Colors.grey,
                 thickness: 1,
               ),
               FutureBuilder<List<Category>>(
-                  future: ref.read(categoryListModel).getCategories(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final categories = snapshot.data!;
-                      var selectedCategory = categories.first;
-                      return TodoForm(
-                        taskNameController: taskNameController,
-                        descriptionController: descriptionController,
-                        dateTimeController: dateTimeController,
-                        onCategoryChanged: (category) {
-                          selectedCategory = category!;
-                          debugPrint(selectedCategory.name);
-                        },
-                        onDateSaved: (dateTime) {
-                          dateTimeController.value = dateTime;
-                          debugPrint(
-                              'onDateSaved: ${dateTimeController.value}');
-                        },
-                        onSavePressed: () {
-                          if (formKey.currentState != null &&
-                              formKey.currentState!.validate()) {
-                            final Todo newTodo = Todo(
-                              id: DateTime.now().toString(),
-                              isDone: false,
-                              dueDate: dateTimeController.value,
-                              description: descriptionController.text,
-                              title: taskNameController.text,
-                              categoryId: selectedCategory.id,
-                            );
-                            debugPrint('New isDone: ${newTodo.isDone}');
-                            debugPrint('New dueDate: ${newTodo.dueDate}');
-                            debugPrint(
-                                'New description: ${newTodo.description}');
-                            debugPrint('New title: ${newTodo.title}');
-                            debugPrint('New categoryId: ${newTodo.categoryId}');
+                future: ref.read(categoryListModel).getCategories(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final categories = snapshot.data!;
+                    var selectedCategory = categories.first;
+                    return TodoForm(
+                      taskNameController: taskNameController,
+                      descriptionController: descriptionController,
+                      dateTimeController: dateTimeController,
+                      onCategoryChanged: (category) {
+                        selectedCategory = category!;
+                        debugPrint(selectedCategory.name);
+                      },
+                      onDateSaved: (dateTime) {
+                        dateTimeController.value = dateTime;
+                        debugPrint('onDateSaved: ${dateTimeController.value}');
+                      },
+                      onSavePressed: () {
+                        if (formKey.currentState != null &&
+                            formKey.currentState!.validate()) {
+                          final Todo newTodo = Todo(
+                            id: DateTime.now().toString(),
+                            isDone: false,
+                            dueDate: dateTimeController.value,
+                            description: descriptionController.text,
+                            title: taskNameController.text,
+                            categoryId: selectedCategory.id,
+                          );
+                          debugPrint('New isDone: ${newTodo.isDone}');
+                          debugPrint('New dueDate: ${newTodo.dueDate}');
+                          debugPrint('New description: ${newTodo.description}');
+                          debugPrint('New title: ${newTodo.title}');
+                          debugPrint('New categoryId: ${newTodo.categoryId}');
 
-                            ref.read(todosListState.notifier).addTodo(newTodo);
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        formKey: formKey,
-                        categories: categories,
-                        selectedCategory: selectedCategory,
-                        todo: null,
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  }),
+                          ref.read(todosListState.notifier).addTodo(newTodo);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      formKey: formKey,
+                      categories: categories,
+                      selectedCategory: selectedCategory,
+                      todo: null,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
             ],
           ),
         ),

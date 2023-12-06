@@ -27,6 +27,7 @@ class CategoryModel extends Category {
   //create toMap func
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'iconIndex': iconIndex,
       'colorIndex': colorIndex,

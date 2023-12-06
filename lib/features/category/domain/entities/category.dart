@@ -88,10 +88,17 @@ class Category {
   // Create functions to handle the icon and color
   IconData get icon => CategoryColors.categoryIcons[iconIndex];
   ColorPair get categoryColor => CategoryColors.categoryPairs[colorIndex];
+
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Category && runtimeType == other.runtimeType && id == other.id;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Category &&
+        other.id == id &&
+        other.name == name &&
+        other.iconIndex == iconIndex &&
+        other.colorIndex == colorIndex;
+  }
 
   @override
   int get hashCode => id.hashCode;

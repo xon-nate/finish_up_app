@@ -18,13 +18,13 @@ class CategoryLocalRepositoryImpl implements CategoryRepository {
     try {
       //open database
       final db = await localDataBase.openDB();
-      //insert new category
-      final id = await localDataBase.addCategory(newCategory);
-      //get new category
-      final category = await localDataBase.getCategory(id);
+      //add category
+      await localDataBase.addCategory(newCategory);
+      //get added category
+      final category = await localDataBase.getCategory(newCategory.id);
       //close database
       await db.close();
-      //return new category
+      //return added category
       return Right(category);
     } on Exception catch (e) {
       return Left(
@@ -38,8 +38,8 @@ class CategoryLocalRepositoryImpl implements CategoryRepository {
   @override
   Future<Either<Failure, Category>> deleteCategoryById(String id) async {
     // get category by id
-    final category = await localDataBase.getCategory(int.parse(id));
-    await localDataBase.deleteCategory(int.parse(id));
+    final category = await localDataBase.getCategory(id);
+    await localDataBase.deleteCategory(id);
     return Right(category);
   }
 
@@ -54,6 +54,11 @@ class CategoryLocalRepositoryImpl implements CategoryRepository {
       //close database
       await db.close();
       //return categories
+      // for (var category in categories) {
+      // print('getCategories: ');
+      // print(
+      // '${category.name} ${category.id} ${category.colorIndex} ${category.iconIndex}');
+      // }
       return Right(categories);
     } on Exception catch (e) {
       return Left(
@@ -73,8 +78,7 @@ class CategoryLocalRepositoryImpl implements CategoryRepository {
       //update category
       await localDataBase.updateCategory(updatedCategory);
       //get updated category
-      final category =
-          await localDataBase.getCategory(int.parse(updatedCategory.id));
+      final category = await localDataBase.getCategory(updatedCategory.id);
       //close database
       await db.close();
       //return updated category
@@ -90,7 +94,7 @@ class CategoryLocalRepositoryImpl implements CategoryRepository {
 
   @override
   Future<Either<Failure, Category>> getCategoryById(String id) async {
-    return Right(await localDataBase.getCategory(int.parse(id)));
+    return Right(await localDataBase.getCategory(id));
   }
 }
 

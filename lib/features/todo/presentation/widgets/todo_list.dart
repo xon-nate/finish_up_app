@@ -10,25 +10,24 @@ import 'todo_item_shimmer.dart';
 final futureCategoryProvider =
     FutureProvider.family<Category, String>((ref, id) async {
   final category = await ref.watch(categoryListModel).getCategoryById(id);
+  debugPrint(category.name);
   return category;
 });
 
 class TodoList extends StatelessWidget {
   const TodoList({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final todos = ref.watch(todosListState).todos;
-
         return ListView.builder(
           physics: const ClampingScrollPhysics(),
           shrinkWrap: true,
           itemCount: todos.length,
           itemBuilder: (_, index) {
             final todo = todos[index];
-            //todo make it returrn list of categories not just 1 blyat
+            //todo make it return list of categories not just 1 blyat
             return ref.watch(futureCategoryProvider(todo.categoryId)).when(
                   loading: () => const TodoItemShimmer(),
                   error: (error, stackTrace) {

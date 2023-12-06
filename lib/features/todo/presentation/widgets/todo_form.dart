@@ -61,7 +61,7 @@ class _TodoFormState extends ConsumerState<TodoForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      // autovalidateMode: AutovalidateMode.onUserInteraction,
       key: widget.formKey,
       child: Column(
         children: [
@@ -81,26 +81,25 @@ class _TodoFormState extends ConsumerState<TodoForm> {
             ),
           ),
           LabeledInputWidget(
-            label: 'Category',
-            inputWidget: DropdownButtonFormField<Category>(
-              value: selectedCategory,
-              onChanged: (category) {
-                widget.onCategoryChanged(category);
-              },
-              validator: (value) {
-                if (value == null) {
-                  return 'Please select a category';
-                }
-                return null;
-              },
-              items: widget.categories.map((category) {
-                return DropdownMenuItem<Category>(
-                  value: category,
-                  child: Text(category.name),
-                );
-              }).toList(),
-            ),
-          ),
+              label: 'Category',
+              inputWidget: DropdownButtonFormField<Category>(
+                value: selectedCategory,
+                onChanged: (category) {
+                  widget.onCategoryChanged(category);
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
+                items: widget.categories.map((category) {
+                  return DropdownMenuItem<Category>(
+                    value: category,
+                    child: Text(category.name),
+                  );
+                }).toList(),
+              )),
           DateTimeFormField(
             onSaved: (dateTime) {
               widget.onDateSaved(dateTime);

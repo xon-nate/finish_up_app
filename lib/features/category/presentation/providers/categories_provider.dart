@@ -56,10 +56,9 @@ class CategoryStateNotifier extends StateNotifier<Categories> {
         .then((value) => {state = Categories(categories: value)});
   }
 
-  Future<Category> getCategoryById(String id) async {
+  Future<Category> getCategoryById(String? id) async {
     final category =
         await ref.read(getCategoryByIdUseCaseProvider).call(Params(id));
-    debugPrint("CategoryStateNotifier: $category");
     return await category.fold(
         (l) => Category(
               id: 0.toString(),

@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:uuid/uuid.dart'; // Import the UUID package
 
-// import '../../../../core/errors/errors.dart';
 import '../../domain/entities/category.dart';
 import '../models/category_model.dart';
 
@@ -10,14 +9,15 @@ abstract class CategoryLocalDataBase {
   Future<sql.Database> openDB();
   Future<void> createTables(sql.Database database);
   Future<List<Category>> getCategories();
-  Future<Category> getCategory(int id);
-  Future<int> addCategory(Category category);
-  Future<int> updateCategory(Category category);
-  Future<void> deleteCategory(int id);
+  Future<Category> getCategory(String id);
+  Future<void> addCategory(Category category);
+  Future<void> updateCategory(Category category);
+  Future<void> deleteCategory(String id);
 }
-//sqlite is local database
 
 class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
+  final Uuid uuid = const Uuid(); // Create a UUID generator instance
+
   @override
   Future<sql.Database> openDB() async {
     try {
@@ -34,91 +34,89 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
     }
   }
 
-  //Create table and fill it with some predefined data
   @override
   Future<void> createTables(sql.Database database) async {
-    //create if not exists
     await database.execute('''
-    1CREATE TABLE IF NOT EXISTS categories (
-      id TEXT PRIMARY KEY,
-      name TEXT,
-      iconIndex INTEGER,
-      colorIndex INTEGER
-    )
-  ''');
+      CREATE TABLE IF NOT EXISTS categories (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT,
+        iconIndex INTEGER,
+        colorIndex INTEGER
+      )
+    ''');
 
     final List<Map<String, dynamic>> maps = await database.query('categories');
     if (maps.isEmpty) {
       print('Inserting some raw data into the categories table...');
       final List<CategoryModel> categories = [
         CategoryModel(
-          id: '0',
+          id: uuid.v4(),
           name: 'General',
           iconIndex: 17,
           colorIndex: 7,
         ),
         CategoryModel(
-          id: '1',
+          id: uuid.v4(),
           name: 'Design',
           iconIndex: 0,
           colorIndex: 0,
         ),
         CategoryModel(
-          id: '2',
+          id: uuid.v4(),
           name: 'Code',
           iconIndex: 1,
           colorIndex: 1,
         ),
         CategoryModel(
-          id: '3',
+          id: uuid.v4(),
           name: 'Meeting',
           iconIndex: 2,
           colorIndex: 2,
         ),
         CategoryModel(
-          id: '4',
+          id: uuid.v4(),
           name: 'Shopping',
           iconIndex: 3,
           colorIndex: 3,
         ),
         CategoryModel(
-          id: '5',
+          id: uuid.v4(),
           name: 'Travel',
           iconIndex: 4,
           colorIndex: 4,
         ),
         CategoryModel(
-          id: '6',
+          id: uuid.v4(),
           name: 'Study',
           iconIndex: 5,
           colorIndex: 5,
         ),
         CategoryModel(
-          id: '7',
+          id: uuid.v4(),
           name: 'Work',
           iconIndex: 6,
           colorIndex: 6,
         ),
         CategoryModel(
-          id: '8',
+          id: uuid.v4(),
           name: 'Home',
           iconIndex: 7,
           colorIndex: 7,
         ),
         CategoryModel(
-          id: '9',
+          id: uuid.v4(),
           name: 'Health',
           iconIndex: 8,
           colorIndex: 8,
         ),
         CategoryModel(
-          id: '10',
+          id: uuid.v4(),
           name: 'Food',
           iconIndex: 9,
           colorIndex: 9,
         ),
         CategoryModel(
-          id: '11',
+          id: uuid.v4(),
           name: 'Other',
           iconIndex: 10,
           colorIndex: 10,
@@ -131,6 +129,9 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
           category.toMap(),
           conflictAlgorithm: sql.ConflictAlgorithm.replace,
         );
+        print('===============================CATEGORY ID');
+        print(
+            '${category.id} ${category.name} ${category.iconIndex} ${category.colorIndex}');
         print('...Done');
       }
     }
@@ -141,6 +142,8 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
     final db = await openDB();
     try {
       final List<Map<String, dynamic>> maps = await db.query('categories');
+      print('===============================CATEGORY ID');
+      print(maps);
       return List.generate(maps.length, (i) {
         return CategoryModel(
           id: maps[i]['id'].toString(),
@@ -157,7 +160,7 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
   }
 
   @override
-  Future<Category> getCategory(int id) async {
+  Future<Category> getCategory(String id) async {
     final db = await openDB();
     try {
       final List<Map<String, dynamic>> maps = await db.query(
@@ -179,24 +182,25 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
   }
 
   @override
-  Future<int> addCategory(Category category) async {
+  Future<void> addCategory(Category category) async {
+    print('addCategory: ${category.id}');
     final db = await openDB();
-    return await db.insert(
+    await db.insert(
       'categories',
       CategoryModel(
-        id: category.id,
+        id: uuid.v4(),
         name: category.name,
         iconIndex: category.iconIndex,
         colorIndex: category.colorIndex,
       ).toMap(),
-      conflictAlgorithm: sql.ConflictAlgorithm.replace,
+      // conflictAlgorithm: sql.
     );
   }
 
   @override
-  Future<int> updateCategory(Category category) async {
+  Future<void> updateCategory(Category category) async {
     final db = await openDB();
-    return await db.update(
+    await db.update(
       'categories',
       CategoryModel(
         id: category.id,
@@ -210,7 +214,7 @@ class CategoryLocalDataBaseImpl implements CategoryLocalDataBase {
   }
 
   @override
-  Future<void> deleteCategory(int id) async {
+  Future<void> deleteCategory(String id) async {
     final db = await openDB();
     await db.delete(
       'categories',
