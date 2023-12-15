@@ -20,8 +20,28 @@ class EditTodoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Category? selectedCategory;
-    final todo =
-        ref.watch(todosListState).todos.firstWhere((todo) => todo.id == todoId);
+    if (!context.mounted) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Widget is not active'),
+        ),
+      );
+    }
+
+    final todosState = ref.watch(todosListState);
+
+    // Check if todosState is null or empty
+    if (todosState.todos.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Todos data is not available'),
+        ),
+      );
+    }
+
+    // Find the specific todo with the given todoId
+    final todo = todosState.todos.firstWhere((todo) => todo.id == todoId);
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
@@ -95,8 +115,6 @@ class EditTodoScreen extends ConsumerWidget {
                           isDone: false,
                         );
                         ref.read(todosListState.notifier).updateTodo(newTodo);
-                        ref.refresh(todosFutureProvider(
-                            selectedCategory?.id ?? todo.categoryId));
 
                         Navigator.pop(context);
                       }

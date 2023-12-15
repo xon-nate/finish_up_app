@@ -55,9 +55,15 @@ class TodosStateNotifier extends StateNotifier<Todos> {
             todo,
           ),
         );
+
     await getTodos().then((value) {
       state = Todos(todos: value);
     });
+  }
+
+  Future<void> updateTodos() async {
+    final todos = await ref.read(getAllTodosUseCaseProvider).call(NoParams());
+    state = Todos(todos: todos.fold((l) => [], (r) => r));
   }
 
   Future<bool> updateTodoStatus(Todo todo) async {
@@ -75,7 +81,10 @@ class TodosStateNotifier extends StateNotifier<Todos> {
   //get todos
   Future<List<Todo>> getTodos() async {
     final todos = await ref.read(getAllTodosUseCaseProvider).call(NoParams());
-    return todos.fold((l) => [], (r) => r);
+    return todos.fold(
+      (l) => [],
+      (r) => r,
+    );
   }
 
   Future<bool> deleteTodo(id) async {
