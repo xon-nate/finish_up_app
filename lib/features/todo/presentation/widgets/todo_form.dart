@@ -38,11 +38,14 @@ class TodoForm extends ConsumerStatefulWidget {
 }
 
 class _TodoFormState extends ConsumerState<TodoForm> {
-  Category? selectedCategory;
+  late Category? selectedCategory;
+  late Category? initialSelectedCategory;
 
   @override
   void initState() {
     super.initState();
+    initialSelectedCategory = widget.selectedCategory;
+    selectedCategory = initialSelectedCategory;
 
     if (widget.todo == null) {
       selectedCategory = widget.selectedCategory;
@@ -85,6 +88,9 @@ class _TodoFormState extends ConsumerState<TodoForm> {
               inputWidget: DropdownButtonFormField<Category>(
                 value: selectedCategory,
                 onChanged: (category) {
+                  setState(() {
+                    selectedCategory = category;
+                  });
                   widget.onCategoryChanged(category);
                 },
                 validator: (value) {

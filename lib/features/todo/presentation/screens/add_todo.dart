@@ -8,10 +8,6 @@ import '../controllers/date_time_controller.dart';
 import '../providers/todo_controller.dart';
 import '../widgets/todo_form.dart';
 
-final categoryListModelProvider = Provider<CategoryStateNotifier>((ref) {
-  return ref.watch(categoryListState.notifier);
-});
-
 class AddTodoBottomSheet extends ConsumerStatefulWidget {
   const AddTodoBottomSheet({Key? key}) : super(key: key);
 
@@ -24,6 +20,24 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
   final taskNameController = TextEditingController();
   final descriptionController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late Category selectedCategory; // Declare selectedCategory here
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final categories = await ref.read(categoryListModel).getCategories();
+      setState(() {
+        selectedCategory = categories.first; // Set the selected category
+      });
+    } catch (error) {
+      // Handle error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +52,7 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'Add Todo',
-                  style: Theme.of(context).textTheme.displayLarge,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               const Divider(
@@ -50,18 +64,17 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final categories = snapshot.data!;
-                    var selectedCategory = categories.first;
                     return TodoForm(
                       taskNameController: taskNameController,
                       descriptionController: descriptionController,
                       dateTimeController: dateTimeController,
                       onCategoryChanged: (category) {
-                        selectedCategory = category!;
-                        debugPrint(selectedCategory.name);
+                        setState(() {
+                          selectedCategory = category!;
+                        });
                       },
                       onDateSaved: (dateTime) {
                         dateTimeController.value = dateTime;
-                        debugPrint('onDateSaved: ${dateTimeController.value}');
                       },
                       onSavePressed: () {
                         if (formKey.currentState != null &&
@@ -74,12 +87,6 @@ class _AddTodoBottomSheetState extends ConsumerState<AddTodoBottomSheet> {
                             title: taskNameController.text,
                             categoryId: selectedCategory.id,
                           );
-                          debugPrint('New isDone: ${newTodo.isDone}');
-                          debugPrint('New dueDate: ${newTodo.dueDate}');
-                          debugPrint('New description: ${newTodo.description}');
-                          debugPrint('New title: ${newTodo.title}');
-                          debugPrint('New categoryId: ${newTodo.categoryId}');
-
                           ref.read(todosListState.notifier).addTodo(newTodo);
                           Navigator.of(context).pop();
                         }
